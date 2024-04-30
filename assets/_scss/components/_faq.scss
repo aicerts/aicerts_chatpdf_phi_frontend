@@ -1,0 +1,57 @@
+.faq-arapper {
+    background: #f8fbfd;
+
+    .accordion {
+        margin-top: 50px;
+        font-family: $Montserrat;
+
+        .accordion-item {
+            border: none;
+            
+            &:not(:last-child) {
+                margin-bottom: 25px;                
+            }
+
+            .accordion-header {
+                .accordion-button {
+                    color: #1C1F30;
+                    font-family: $Montserrat;
+                    font-size: 18px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    border-radius: 10px;
+                    background: #F3F4F6;
+                    margin-bottom: 5px;
+
+                    &::after {
+                        background-image: url(/icons/expand.svg);
+                        width: 26px;
+                        height: 26px;
+                        
+                    }
+                    
+                    &:not(.collapsed){
+                        &::after {
+                            background-image: url(/icons/collapse.svg);
+                            transform: translate(0, 0);
+                        }
+                    }
+                }
+            }
+
+            .collapse {
+                .accordion-body {
+                    color: #4D5060;
+                    font-family: $Montserrat;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                    border-radius: 10px;
+                    border: 1px solid #E4E4E4;
+                }
+            }
+        }
+    }
+}

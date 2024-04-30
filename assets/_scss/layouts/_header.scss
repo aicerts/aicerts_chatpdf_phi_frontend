@@ -1,0 +1,25 @@
+.navbar {
+  .navbar-brand {
+      color: #CFA935;
+      font-family: $Poppins;
+      font-size: 36px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+
+      span {
+          color: #000;
+      }
+  }
+  
+  .navbar-nav {
+      .nav-link {
+          color: #000;
+          font-family: $Poppins;
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+      }
+  }
+}

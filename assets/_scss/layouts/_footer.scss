@@ -1,0 +1,49 @@
+.home-footer {
+    .footer {
+        height: 400px;
+        position: relative;
+
+        .container {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 40px;
+        }
+    }
+}
+
+.footer {
+    padding: 40px 0;
+    background-image: url(/bg/footer-bg.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .copyright {
+        color: #FFF;
+        font-family: $Montserrat;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
+
+    .right-link {
+        display: flex;
+        column-gap: 24px;
+        align-items: center;
+
+        a {
+            color: #FFF;
+            font-family: $Poppins;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

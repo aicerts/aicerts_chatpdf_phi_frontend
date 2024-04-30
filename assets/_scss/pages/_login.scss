@@ -1,0 +1,90 @@
+.login-wrapper {
+    height: 100vh;
+    background: url(/bg/login-bg.svg) lightgray 50% / cover no-repeat;
+    padding: 80px 0;
+
+    &.register {
+        .form-container {
+            padding: 48px;
+
+            .save-it { 
+                margin: 30px 0;
+            }
+        }
+    }
+
+    .form-container {
+        background-color: $white;
+        padding: 48px;
+        border-radius: 50px;
+
+        .title {
+            color: #000;
+            font-family: $Montserrat;
+            font-size: 40px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin-bottom: 40px;
+        }
+
+        form {
+            .form-label {
+                color: #5A677E;
+                font-family: $Montserrat;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: normal;
+                margin-bottom: 15px;
+            }
+
+            .form-control {
+                border-radius: 10px;
+                border: 1px solid #D5DDEA;
+            }
+
+            .save-it {
+                margin: 60px 0;
+
+                .form-check-label {
+                    color: #5A677E;
+                    font-family: $Montserrat;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                a {
+                    color: #5352EC;
+                    font-family: $Montserrat;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                    text-decoration-line: underline;
+                }
+            }
+        }
+
+        .no-account {
+            color: #5A677E;
+            font-family: $Montserrat;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            margin-top: 30px;
+
+            a {
+                color: #5352EC;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: normal;
+                text-decoration-line: underline;
+            }
+        }
+    }
+}
