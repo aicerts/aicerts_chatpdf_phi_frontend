@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Showpdf from './showpdf';
 import ChatSection from './chatSection';
 import DataContext from '@/utils/DataContext';
+import Image from 'next/image';
 
 const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading}) => {
   const { selectedPdf } = useContext(DataContext);
@@ -20,7 +21,7 @@ const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading}) => {
   return (
     <div className='main-section'>
       <div className='main-header'>
-            <img onClick={toggleCollapse} className='hide-sidebar-icon' src='/icons/hide-sidebar.svg' />
+            <Image alt='hideicon' width={20} height={20} onClick={toggleCollapse} className='hide-sidebar-icon' src='/icons/hide-sidebar.svg' />
             <p className='header-p'>{pdfName}</p>
       </div>
       <div className='main-body'>

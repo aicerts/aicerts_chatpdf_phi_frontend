@@ -126,7 +126,6 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
               
                 setSelectedPdf(url)
                 setSelectedTab(response.data?.data?._id)
-                
                 if(!chatMessage.length>=1){
                     await handleSendMessage(sourceId);
                   }
@@ -207,13 +206,24 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
             setSelectedPdf(file);
             let formData = new FormData();
             formData.append('File', file);
-            await uploadPDFByFile(formData);
     
-            if (typeof onFileSelect === 'function') {
-                onFileSelect(file);
+            try {
+                await uploadPDFByFile(formData);
+    
+                if (typeof onFileSelect === 'function') {
+                    onFileSelect(file);
+                }
+            } catch (error) {
+                console.error('Error uploading PDF:', error);
+                // Handle error here, you can reset input values
+                setPdf(null);
+                setPdfName(null);
+                setSelectedPdf(null);
+                toast.error("Error uploading PDF. Please try again.");
             }
         }
     };
+    
     
     
     

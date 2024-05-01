@@ -12,7 +12,7 @@ const NavLogoForFullBg = () => {
     return (
         <Navbar>
             <Image 
-                src="https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg"
+                src="/logo/Logo-original.png"
                 width={284}
                 height={50}
                 alt='ChatPDF'

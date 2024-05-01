@@ -15,6 +15,10 @@ const RegisterComponent = () => {
     const [otpTimer, setOtpTimer] = useState(60); // Timer for OTP
     const [passwordValid, setPasswordValid] = useState([]); // State to track password validity
     const [passwordMatch, setPasswordMatch] = useState(true);
+    const [nameError, setNameError] =useState({
+        firstName:"",
+        lastName:""
+    })
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -48,7 +52,14 @@ const RegisterComponent = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         let newValue = value;
-
+        let error = '';
+        // Validate firstName and lastName for special characters
+    if (name === 'firstName' || name === 'lastName') {
+        if (!/^[a-zA-Z ]+$/.test(value)) {
+            error = 'Only letters and spaces are allowed.';
+        }
+        setNameError({ ...nameError, [name]: error }); // Update nameError state
+    }
         if (name === 'password') {
             validatePassword(value);
             setPasswordMatch(value === formData.confirmPassword);
@@ -237,12 +248,18 @@ const RegisterComponent = () => {
                                             <Form.Group className="mb-4" controlId="firstName">
                                                 <Form.Label>First Name*</Form.Label>
                                                 <Form.Control type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required />
+                                                {nameError.firstName && (
+                                                    <Form.Text className="text-danger">{nameError?.firstName}</Form.Text>
+                                                )}
                                             </Form.Group>
                                         </Col>
                                         <Col>
                                             <Form.Group className="mb-4" controlId="lastName">
                                                 <Form.Label>Last Name*</Form.Label>
                                                 <Form.Control type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required />
+                                                {nameError.lastName && (
+                                                    <Form.Text className="text-danger">{nameError?.lastName}</Form.Text>
+                                                )}
                                             </Form.Group>
                                         </Col>
                                     </Row>
@@ -297,7 +314,7 @@ const RegisterComponent = () => {
                                         <Form.Check
                                             inline
                                             label={(
-                                                <>I agree to the <Link href="/">terms and conditions.</Link></>
+                                                <>I agree to the <Link target='_blank' href="https://www.aicerts.io/privacy-policy">terms and conditions.</Link></>
                                             )}
                                             name="agreedToTerms"
                                             type='checkbox'
@@ -315,7 +332,13 @@ const RegisterComponent = () => {
                                             !formData.lastName ||
                                             !formData.email ||
                                             !formData.password ||
-                                            !formData.phoneNumber
+                                            !formData.phoneNumber ||
+                                            nameError.firstName  ||
+                                            nameError.lastName || 
+                                            !passwordMatch ||
+                                            !passwordValid.length<1
+
+
                                         } 
                                     />
                                 </Form>

@@ -5,14 +5,17 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useContext } from 'react';
 import { toast } from 'react-toastify';
 import { FormControl, InputGroup, Modal } from 'react-bootstrap';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 const ChatSection = ({isLoading,setIsLoading}) => {
-  const { pdfData, setPdfData, sourceId, chatMessage,setChatMessage,selectedTab } = useContext(DataContext);
+  const { pdfData, setPdfData, sourceId, chatMessage,setChatMessage,selectedTab, setSourceId } = useContext(DataContext);
   const[message, setMessage]=useState(false)
   const[userMessage, setUserMessage]=useState("")
   const [showCopiedMessage, setShowCopiedMessage] = useState(false);
   const [show, setShow] = useState(false);
   const [link, setLink] = useState('');
+  const router = useRouter();
 const url = process.env.NEXT_PUBLIC_URL_LIVE;
   const handleClose = () => {
     setShow(false);
@@ -23,6 +26,15 @@ const handleShow=(()=>{
   setShow(true)
   setLink(`${url}/widget/${sourceId}`)
 })
+
+useEffect(()=>{
+  const { id } = router.query;
+  if (id) {
+    
+    setSourceId(id);
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+},[router.query.id])
 
 
 
@@ -72,6 +84,7 @@ toast.error("error fetching chats")
   useEffect(()=>{
 
 getMessages()
+// eslint-disable-next-line react-hooks/exhaustive-deps
   },[selectedTab])
   
 
@@ -189,30 +202,14 @@ getMessages()
       <div className='chat-header'>
 <p>Chat</p>
 <div className='chat-icons'>
-{/* <div className="tooltip-container">
-    <img className='icons' src='/icons/share.svg' />
-    <span className="tooltip-text">Share</span>
-  </div> */}
-  {/* <div className="tooltip-container">
-  <img className='icons' src='/icons/rename.svg' />
-    <span className="tooltip-text">Rename</span>
-  </div> */}
   <div className="tooltip-container">
-  <img className='icons' src='/icons/download.svg' title='Download' onClick={exportChat} />
+  <Image alt='downloadicon' height={10} width={10} className='icons' src='/icons/download.svg' title='Download' onClick={exportChat} />
     <span className="tooltip-text">Export Chat</span>
   </div>
   <div className="tooltip-container">
-  <img onClick={()=>{handleShow()}} className='icons' src='/icons/share.svg' />
+  <Image alt='shareicon' height={10} width={10} onClick={()=>{handleShow()}} className='icons' src='/icons/share.svg' />
     <span className="tooltip-text">Generate Link</span>
   </div>
-  {/* <div className="tooltip-container" >
-  <img className='icons' src='/icons/delete.svg' onClick={deleteChat} />
-    <span className="tooltip-text">Delete Chat</span>
-  </div> */}
-  
-  
-  
-  
 </div>
 
       </div>
@@ -235,7 +232,9 @@ getMessages()
         className={`message ${message.role === 'user' ? 'user-message' : 'admin-message'}`}
       >
         {message.role === 'assistant' && (
-          <img
+          <Image
+          width={10}
+          height={10}
             src='/icons/copied-icon.svg'
             alt='Copy Icon'
             className='copy-icon'
@@ -247,9 +246,11 @@ getMessages()
     )
   ))
 ) : (
-  <div className="cannot-read-pdf">
-    Unable to read PDF content
-  </div>
+  <div
+  className={`message admin-message`}
+>
+Hello! How can I assist you?
+</div>
 )}
 
 <div ref={messagesEndRef} />
@@ -258,7 +259,7 @@ getMessages()
 <form onSubmit={(e)=>{handleSubmit(e)}} className='input-container'>
   <input  className='input-enter' placeholder='Ask to PDF...'  value={userMessage} onChange={handleChange} />
   <div onClick={(e)=>{handleSubmit(e)}} className="send-icon-container">
-  <img className='icon-send' src='/icons/send-icon.svg' />
+  <Image alt='sendicon' width={20} height={20} className='icon-send' src='/icons/send-icon.svg' />
   </div>
 </form>
       </div>
@@ -275,7 +276,7 @@ getMessages()
       />
      
         {showCopiedMessage ? <span className="copy-text-show">Copied</span>:
-        <img
+        <Image width={10} height={10}
           src='/icons/copied-icon.svg'
           alt='Copy Icon'
           className='copy-icon'

@@ -1,4 +1,5 @@
 import chatPDF from '@/services/ChatPDF';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -48,6 +49,7 @@ const Widget = () => {
 
       setChatMessage([...chatMessage,newMessage])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
 
@@ -120,16 +122,6 @@ const Widget = () => {
     <div className='main-cont' style={{height:"100vh", width:"100v"}}>
       <div className='chat-header'>
 <p>Chat</p>
-{/* <div className='chat-icons'>
-  <div className="tooltip-container">
-  <img className='icons' src='/icons/download.svg' title='Download' onClick={exportChat} />
-    <span className="tooltip-text">Export Chat</span>
-  </div>
-  
-  
-  
-  
-</div> */}
 
       </div>
       <div className='chat-container-outer'>
@@ -161,7 +153,7 @@ const Widget = () => {
 <form onSubmit={(e)=>{handleSubmit(e)}} className='input-container'>
   <input  className='input-enter' placeholder='Ask to PDF...'  value={userMessage} onChange={handleChange} />
   <div onClick={(e)=>{handleSubmit(e)}} className="send-icon-container">
-  <img className='icon-send' src='/icons/send-icon.svg' />
+  <Image alt='sendicon' width={20} height={20} className='icon-send' src='/icons/send-icon.svg' />
   </div>
 </form>
       </div>

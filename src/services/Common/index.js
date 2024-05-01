@@ -16,7 +16,7 @@ config = {}) => {
     const response = await postAxiosInstance[req](url, data, config);
     return response
   } catch (error) {
-    toast.error(error?.response?.data.message || 'Something went wrong');
+    // toast.error(error?.response?.data.message || 'Something went wrong');
 
     console.error('Something went wrong', error);
     return false
@@ -31,7 +31,7 @@ export const  registerApi = async (url, data = {}) => {
     return response;
   } catch (error) {
     
-    toast.error(error.response.data.message || 'Something went wrong');
+    // toast.error(error.response.data.message || 'Something went wrong');
     // console.error('Something went wrong', (error.message));
     return error;
   }
@@ -47,7 +47,7 @@ export const  loginPostApi = async (url, data) => {
     }
     return response;
   } catch (error) {
-    toast.error(error.response.data.message || 'Something went wrong');
+    // toast.error(error.response.data.message || 'Something went wrong');
     // console.error('Something went wrong', (error.message));
     return false
   }

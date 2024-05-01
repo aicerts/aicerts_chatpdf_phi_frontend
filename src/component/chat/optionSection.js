@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { generatePresignedUrl } from '@/utils/common';
 import { Modal } from 'react-bootstrap';
+import Image from 'next/image';
 const OptionSection = ({setIsLoading, isLoading}) => {
   const router = useRouter()
   const { setPdfList,folders,setFolders, pdfList,setSelectedPdf,setSourceId, sourceId,setChatMessage,chatMessage, selectedPdf,selectedTab,setSelectedTab } = useContext(DataContext);
@@ -27,6 +28,7 @@ const OptionSection = ({setIsLoading, isLoading}) => {
   useEffect(()=>{
 
     getMessages()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
       },[selectedTab])
 
   const handleClose = () => {
@@ -95,6 +97,7 @@ const OptionSection = ({setIsLoading, isLoading}) => {
   }
   useEffect(() => {
     fetchPDFList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
 
@@ -112,6 +115,7 @@ const OptionSection = ({setIsLoading, isLoading}) => {
       // setSelectedTab(pdfFile?.name)
       handleClickPdf(selectedPdf);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleOpen=((id)=>{
@@ -317,7 +321,7 @@ setSelectedPdf(url)
     {/* Folder icon, name, and delete button */}
     <div className='folder-info' onClick={() => toggleFolder(index)}>
       <div className='folder-icon'>
-        <img className='folder-icon-small' src='/icons/folder-icon-small.svg' alt='Folder Icon' />
+        <Image width={20} height={20}className='folder-icon-small' src='/icons/folder-icon-small.svg' alt='Folder Icon' />
         <span className='folder-name'>{folder?.folder?.name}</span>
       </div>
         
@@ -325,14 +329,14 @@ setSelectedPdf(url)
       {/* Conditionally render delete folder icon */}
       <div className='folder-right'>
       {folder.folder.name !== "Default" && (
-        <img 
+        <Image width={20} height={20} 
         className='icons' 
         src='/icons/delete.svg' 
           alt='Delete Folder' 
           onClick={() => handleDeleteFolder(folder.folder._id)} 
         />
       )}
-      <img  
+      <Image width={20} height={20} 
       onClick={() => {handleOpen(folder.folder._id)}} 
      className='add-icon-small mx-2' src='/icons/add-file.svg' alt='Add Icon' />
     </div>
@@ -343,10 +347,10 @@ setSelectedPdf(url)
       <div className='files-container'>
         {folder.files.map((file, idx) => (
           <div onClick={() => handleClickPdf(file)} key={idx} style={{ background: selectedTab == file._id ? "#CFA935" : "#F3F4F6" }} className='file file-color-golden'>
-            <img className='file-small-img' src={selectedTab == file._id ? '/icons/file-small.svg' : '/icons/file-small-gray.svg'} alt='File Icon' />
+            <Image width={20} height={20} className='file-small-img' src={selectedTab == file._id ? '/icons/file-small.svg' : '/icons/file-small-gray.svg'} alt='File Icon' />
             <span className='file-name' style={{ color: selectedTab == file._id ? "#FFFFFF" : "#000000" }}>{file.name}</span>
             {/* Delete file icon */}
-            <img 
+            <Image width={20} height={20}
               className='icons' 
               src='/icons/delete.svg' 
               alt='Delete File' 

@@ -1,5 +1,6 @@
 import allCommonApis from '@/services/Common';
 import DataContext from '@/utils/DataContext';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
@@ -91,18 +92,18 @@ const Sidebar = () => {
 
   return (
     <div className='sidebar'>
-      <img src='/icons/robot.svg' onClick={()=>{handleNavigateToHome()}} alt='robot' className='robot-icon' />
+      <Image width={20} height={20} src='/icons/robot.svg' onClick={()=>{handleNavigateToHome()}} alt='robot' className='robot-icon' />
       <hr className='line' />
       <div className='icons-container'>
         <div className='top-icons'>
-          {/* <img src='/icons/file-icon.svg' alt='icon1' className='icon' title='New File' /> */}
-          <img onClick={() => setShow(true)} src='/icons/folder-icon.svg' alt='icon2' className='icon' title='New Folder' />
+
+          <Image width={20} height={20} onClick={() => setShow(true)} src='/icons/folder-icon.svg' alt='icon2' className='icon' title='New Folder' />
         </div>
 
         <div className='bottom-icons'>
-          <img src='/icons/premium-icon.svg' alt='icon1' className='icon' title='Upgrade' />
+          <Image width={20} height={20} src='/icons/premium-icon.svg' alt='icon1' className='icon' title='Upgrade' />
           <hr className='line' />
-          <img src='/icons/help-icon.svg' alt='icon2' className='icon' title='help' />
+          <Image width={20} height={20} src='/icons/help-icon.svg' alt='icon2' className='icon' title='help' />
         </div>
       </div>
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
