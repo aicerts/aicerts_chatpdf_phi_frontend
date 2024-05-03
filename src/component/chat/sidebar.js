@@ -37,6 +37,7 @@ const Sidebar = () => {
     if (storedSourceId) {
       setSourceId(storedSourceId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClose = () => {

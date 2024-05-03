@@ -16,7 +16,33 @@ const OptionSection = ({setIsLoading, isLoading}) => {
  const [inputValue, setInputValue] = useState('');
  const [folder_id, setFolder_id] = useState("")
   // State to manage folder visibility
-  
+  const [filteredFilesAndFolders, setFilteredFilesAndFolders] = useState([]);
+
+  // Effect to filter files and folders based on search input
+  useEffect(() => {
+    if (inputValue.trim() === '') {
+      // If search input is empty, display all files and folders
+      setFilteredFilesAndFolders(folders);
+    } else {
+      // Filter files and folders based on search input
+      const filtered = folders.map(folder => {
+        const filteredFiles = folder.files.filter(file => file.name.toLowerCase().includes(inputValue.toLowerCase()));
+        if (filteredFiles.length > 0) {
+          return {
+            ...folder,
+            files: filteredFiles
+          };
+        }
+        return null;
+      }).filter(folder => folder !== null);
+      setFilteredFilesAndFolders(filtered);
+    }
+  }, [inputValue, folders]);
+
+  // Handler for search input change
+  const handleSearchInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
 
   useEffect(() => {
     const user = JSON.parse(localStorage?.getItem("User"));
@@ -41,6 +67,7 @@ const OptionSection = ({setIsLoading, isLoading}) => {
     if (storedSourceId) {
       setSourceId(storedSourceId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(()=>{
@@ -345,14 +372,16 @@ const url = await generatePresignedUrl(file.fileUrl)
   return (
     <div className='options'>
       {/* Search input */}
-      <input type='text' placeholder='Search for PDFs' className='search-input-option' />
+      <input onChange={handleSearchInputChange} type='text' placeholder='Search for PDFs' className='search-input-option' />
 <ToastContainer/>
       {/* Horizontal line */}
       <hr className='horizontal-line' />
 
       {/* Folders */}
       <div className='folder-container'>
-      {folders.map((folder, index) => (
+      {filteredFilesAndFolders.length === 0 ? (
+  <div className="no-files-found">No PDFs found</div>
+) : (filteredFilesAndFolders.map((folder, index) => (
   <div key={index} className='folder'>
     {/* Folder icon, name, and delete button */}
     <div className='folder-info' onClick={() => toggleFolder(index)}>
@@ -400,7 +429,7 @@ const url = await generatePresignedUrl(file.fileUrl)
       </div>
     )}
   </div>
-))}
+)))}
 
       </div>
 

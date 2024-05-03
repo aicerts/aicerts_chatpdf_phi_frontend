@@ -37,6 +37,7 @@ const url = process.env.NEXT_PUBLIC_URL_LIVE;
     if (storedSourceId) {
       setSourceId(storedSourceId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
