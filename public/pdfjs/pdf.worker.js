@@ -28,6 +28,24 @@ export default function UploadPdf({ onFileSelect }) {
       }
     },[])
 
+    useEffect(() => {
+        // Retrieve data from sessionStorage
+        const storedSelectedTab = sessionStorage.getItem('selectedTab');
+        const storedSelectedPdf = sessionStorage.getItem('selectedPdf');
+        const storedSourceId = sessionStorage.getItem('sourceId');
+    
+        // Update states if data is found in sessionStorage
+        if (storedSelectedTab) {
+          setSelectedTab(storedSelectedTab);
+        }
+        if (storedSelectedPdf) {
+          setSelectedPdf(storedSelectedPdf);
+        }
+        if (storedSourceId) {
+          setSourceId(storedSourceId);
+        }
+      }, []);
+
 
     const parsePDF = async (pdfData) => {
         try {
@@ -126,6 +144,10 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
               
                 setSelectedPdf(url)
                 setSelectedTab(response.data?.data?._id)
+                setSourceId(response.data?.data?.sourceId)
+                sessionStorage.setItem('selectedTab', response.data?.data?._id)
+                sessionStorage.setItem('selectedPdf',url)
+                sessionStorage.setItem('sourceId',response.data?.data?.sourceId)
                 if(!chatMessage.length>=1){
                     await handleSendMessage(sourceId);
                   }
@@ -187,9 +209,9 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
     
         if (file) {
             // Check file size
-            if (file.size > 2 * 1024 * 1024) {
+            if (file.size > 50 * 1024 * 1024) {
                 // File size exceeds 2MB
-                alert('File size exceeds 2MB. Please select a smaller file.');
+                alert('File size exceeds 50MB. Please select a smaller file.');
                 return; // Stop further processing
             }
     
@@ -203,7 +225,6 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
             // File size and type are valid
             setPdf(file);
             setPdfName(file.name);
-            setSelectedPdf(file);
             let formData = new FormData();
             formData.append('File', file);
     
@@ -328,7 +349,7 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
                         <div className='link-text' onClick={handleUrlClick}>URL</div>
                     </CustomTooltip>
                 </div>
-                    <p className='text my-2'>MAX PDF (2MB)</p>
+                    <p className='text my-2'>MAX PDF (50MB)</p>
             </div>
         </div>
     );

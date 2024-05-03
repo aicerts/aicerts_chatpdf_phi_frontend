@@ -21,6 +21,24 @@ const Sidebar = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Retrieve data from sessionStorage
+    const storedSelectedTab = sessionStorage.getItem('selectedTab');
+    const storedSelectedPdf = sessionStorage.getItem('selectedPdf');
+    const storedSourceId = sessionStorage.getItem('sourceId');
+
+    // Update states if data is found in sessionStorage
+    if (storedSelectedTab) {
+      setSelectedTab(storedSelectedTab);
+    }
+    if (storedSelectedPdf) {
+      setSelectedPdf(storedSelectedPdf);
+    }
+    if (storedSourceId) {
+      setSourceId(storedSourceId);
+    }
+  }, []);
+
   const handleClose = () => {
     setShow(false);
     setInputValue(''); // Clear input value when closing modal

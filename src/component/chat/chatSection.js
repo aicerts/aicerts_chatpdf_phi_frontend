@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 const ChatSection = ({isLoading,setIsLoading}) => {
-  const { pdfData, setPdfData, sourceId, chatMessage,setChatMessage,selectedTab, setSourceId } = useContext(DataContext);
+  const { pdfData, setPdfData, sourceId, chatMessage,setChatMessage,selectedTab, setSourceId,setSelectedTab,setSelectedPdf } = useContext(DataContext);
   const[message, setMessage]=useState(false)
   const[userMessage, setUserMessage]=useState("")
   const [showCopiedMessage, setShowCopiedMessage] = useState(false);
@@ -20,6 +20,24 @@ const url = process.env.NEXT_PUBLIC_URL_LIVE;
   const handleClose = () => {
     setShow(false);
   };
+
+  useEffect(() => {
+    // Retrieve data from sessionStorage
+    const storedSelectedTab = sessionStorage.getItem('selectedTab');
+    const storedSelectedPdf = sessionStorage.getItem('selectedPdf');
+    const storedSourceId = sessionStorage.getItem('sourceId');
+
+    // Update states if data is found in sessionStorage
+    if (storedSelectedTab) {
+      setSelectedTab(storedSelectedTab);
+    }
+    if (storedSelectedPdf) {
+      setSelectedPdf(storedSelectedPdf);
+    }
+    if (storedSourceId) {
+      setSourceId(storedSourceId);
+    }
+  }, []);
 
 
 const handleShow=(()=>{
@@ -264,6 +282,20 @@ Hello! How can I assist you?
 </form>
       </div>
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+      
+      <div style={{display:"flex",justifyContent:"flex-end",margin:"10px" ,cursor: "pointer", color: "gray", }}>
+      <Image
+  
+  height={13}
+  width={13}
+  onClick={handleClose} 
+  src='/icons/cross.svg'
+  alt='close'
+/>
+
+      </div>
+
+  
   <Modal.Body className='p-5'>
   <p>Copy the link below</p>
     <InputGroup className="mb-3">
@@ -274,16 +306,19 @@ Hello! How can I assist you?
         value={link}
         disabled
       />
-     
-        {showCopiedMessage ? <span className="copy-text-show">Copied</span>:
-        <Image width={10} height={10}
+       <div style={{margin:"10px", cursor:"pointer"}}>
+        {showCopiedMessage ? <span className="">Copied</span>:
+        <Image width={15} height={30}
           src='/icons/copied-icon.svg'
           alt='Copy Icon'
-          className='copy-icon'
+          // className='copy-icon'
           onClick={() => handleCopyToClipboard(link)}
         />
       }
+      </div>
+    
     </InputGroup>
+    
   </Modal.Body>
 </Modal>
 
