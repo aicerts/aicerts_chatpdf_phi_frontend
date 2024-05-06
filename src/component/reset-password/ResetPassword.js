@@ -94,6 +94,11 @@ const ResetPasswordComponent = () => {
 
     const handleVerification = async (e) => {
         e.preventDefault()
+        if (!email) {
+            // Email is required, notify the user
+            toast.error('Email is required');
+            return;
+        }
         try {
             // Start NProgress when the verification process begins
             NProgress.start();

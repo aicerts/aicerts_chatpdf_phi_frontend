@@ -8,6 +8,7 @@ import NProgress from 'nprogress';
 import { registerApi } from '@/services/Common';
 import {ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 const RegisterComponent = () => {
     const router = useRouter();
     const [token, setToken] = useState(null);
@@ -29,6 +30,11 @@ const RegisterComponent = () => {
         agreedToTerms: false,
         confirmPassword: ''
     });
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     // useEffect(() => {
     //     // Check if the token is available in localStorage
@@ -133,6 +139,8 @@ const RegisterComponent = () => {
             }
         } catch (error) {
             console.error('Error:', error);
+            toast.error("something went wrong")
+
         } finally {
             // Make sure to stop NProgress even if there's an error
             NProgress.done();
@@ -269,36 +277,50 @@ const RegisterComponent = () => {
                                     </Form.Group>
                                     <Row>
                                         <Col>
-                                            <Form.Group className="mb-4" controlId="password">
-                                                <Form.Label>Password*</Form.Label>
-                                                <Form.Control 
-                                                    type='password' 
-                                                    name="password" 
-                                                    value={formData.password} 
-                                                    onChange={handleInputChange} 
-                                                    className={passwordValid.length === 0 ? '' : 'border-danger-subtle'}
-                                                    required 
-                                                />
-                                                {passwordValid.map((error, index) => (
-                                                    <Form.Text key={index} className="text-danger" dangerouslySetInnerHTML={{ __html: error }} />
-                                                ))}
-                                            </Form.Group>
+                                        <Form.Group className="mb-4" controlId="password">
+    <Form.Label>Password*</Form.Label>
+    <div style={{ position: 'relative' }}>
+        <Form.Control 
+            type={showPassword?'text':'password'} 
+            name="password" 
+            value={formData.password} 
+            onChange={handleInputChange} 
+            className={passwordValid.length === 0 ? '' : 'border-danger-subtle'}
+            required 
+        />
+        {showPassword ? 
+            <AiFillEyeInvisible onClick={togglePasswordVisibility} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} /> : 
+            <AiFillEye onClick={togglePasswordVisibility} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} />
+        }
+    </div>
+    {passwordValid.map((error, index) => (
+        <Form.Text key={index} className="text-danger" dangerouslySetInnerHTML={{ __html: error }} />
+    ))}
+</Form.Group>
+
                                         </Col>
                                         <Col>
                                             <Form.Group className="mb-4" controlId="confirmPassword">
-                                                <Form.Label>Confirm Password*</Form.Label>
-                                                <Form.Control 
-                                                    type='password' 
-                                                    name="confirmPassword" 
-                                                    value={formData.confirmPassword} 
-                                                    onChange={handleInputChange} 
-                                                    className={passwordMatch ? '' : 'border-danger-subtle'}
-                                                    required 
-                                                />
-                                                {!passwordMatch && (
-                                                    <Form.Text className="text-danger">Passwords do not match.</Form.Text>
-                                                )}
-                                            </Form.Group>
+    <Form.Label>Confirm Password*</Form.Label>
+    <div style={{ position: 'relative' }}>
+        <Form.Control 
+            type={showPassword?'text':'password'} 
+            name="confirmPassword" 
+            value={formData.confirmPassword} 
+            onChange={handleInputChange} 
+            className={passwordMatch ? '' : 'border-danger-subtle'}
+            required 
+        />
+        {showPassword ? 
+            <AiFillEyeInvisible onClick={togglePasswordVisibility} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} /> : 
+            <AiFillEye onClick={togglePasswordVisibility} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} />
+        }
+    </div>
+    {!passwordMatch && (
+        <Form.Text className="text-danger">Passwords do not match.</Form.Text>
+    )}
+</Form.Group>
+
                                         </Col>
                                     </Row>
                                     

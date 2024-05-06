@@ -20,24 +20,27 @@ const OptionSection = ({setIsLoading, isLoading}) => {
 
   // Effect to filter files and folders based on search input
   useEffect(() => {
-    if (inputValue.trim() === '') {
-      // If search input is empty, display all files and folders
-      setFilteredFilesAndFolders(folders);
-    } else {
-      // Filter files and folders based on search input
-      const filtered = folders.map(folder => {
-        const filteredFiles = folder.files.filter(file => file.name.toLowerCase().includes(inputValue.toLowerCase()));
-        if (filteredFiles.length > 0) {
-          return {
-            ...folder,
-            files: filteredFiles
-          };
-        }
-        return null;
-      }).filter(folder => folder !== null);
-      setFilteredFilesAndFolders(filtered);
+    if (typeof inputValue === 'string') {
+      if (inputValue === '') {
+        // If search input is empty, display all files and folders
+        setFilteredFilesAndFolders(folders);
+      } else {
+        // Filter files and folders based on search input
+        const filtered = folders.map(folder => {
+          const filteredFiles = folder?.files?.filter(file => typeof file?.name === 'string' && file.name.toLowerCase().includes(inputValue.toLowerCase()));
+          if (filteredFiles.length > 0) {
+            return {
+              ...folder,
+              files: filteredFiles
+            };
+          }
+          return null;
+        }).filter(folder => folder !== null);
+        setFilteredFilesAndFolders(filtered);
+      }
     }
   }, [inputValue, folders]);
+  
 
   // Handler for search input change
   const handleSearchInputChange = (e) => {
@@ -410,22 +413,27 @@ const url = await generatePresignedUrl(file.fileUrl)
     {/* Files */}
     {folder.isOpen && (
       <div className='files-container'>
-        {folder.files.map((file, idx) => (
-          <div onClick={() => handleClickPdf(file)} key={idx} style={{ background: selectedTab == file._id ? "#CFA935" : "#F3F4F6" }} className='file file-color-golden'>
-            <Image width={20} height={20} className='file-small-img' src={selectedTab == file._id ? '/icons/file-small.svg' : '/icons/file-small-gray.svg'} alt='File Icon' />
-            <span className='file-name' style={{ color: selectedTab == file._id ? "#FFFFFF" : "#000000" }}>{file.name}</span>
-            {/* Delete file icon */}
-            <Image width={20} height={20}
-              className='icons' 
-              src='/icons/delete.svg' 
-              alt='Delete File' 
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent event bubbling to the folder toggle
-                handleDeleteFile(file._id);
-              }} 
-            />
-          </div>
-        ))}
+      {folder.files.length === 0 ? (
+  <div className="empty-folder-message">Folder is empty</div>
+) : (
+  folder.files.map((file, idx) => (
+    <div onClick={() => handleClickPdf(file)} key={idx} style={{ background: selectedTab == file._id ? "#CFA935" : "#F3F4F6" }} className='file file-color-golden'>
+      <Image width={20} height={20} className='file-small-img' src={selectedTab == file._id ? '/icons/file-small.svg' : '/icons/file-small-gray.svg'} alt='File Icon' />
+      <span className='file-name' style={{ color: selectedTab == file._id ? "#FFFFFF" : "#000000" }}>{file.name}</span>
+      {/* Delete file icon */}
+      <Image width={20} height={20}
+        className='icons' 
+        src='/icons/delete.svg' 
+        alt='Delete File' 
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent event bubbling to the folder toggle
+          handleDeleteFile(file._id);
+        }} 
+      />
+    </div>
+  ))
+)}
+
       </div>
     )}
   </div>

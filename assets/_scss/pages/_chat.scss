@@ -507,6 +507,12 @@ text-transform: uppercase;
   
       .folder-icon {
         /* Styles for folder icon */
+        overflow: hidden; 
+        text-align: left;
+        
+        white-space: nowrap; 
+        text-overflow: ellipsis;
+        max-width: calc(100% - 30px);
         margin-right: 5px;
       }
       .folder-icon-small{
@@ -520,9 +526,9 @@ text-transform: uppercase;
         font-size: 12px;
         font-weight: 600;
         line-height: 14.63px;
-        text-align: left;
-        
       }
+     
+    
   
       .add-icon-small{
         width: 18px;
@@ -534,6 +540,12 @@ height: 17.9px;
         /* Styles for files container */
         margin-left: 20px;
         width: 100%;
+      }
+
+      .empty-folder-message{
+        margin:10px 5px;
+        color: gray;
+        font-size: 12px;
       }
   
       .file {

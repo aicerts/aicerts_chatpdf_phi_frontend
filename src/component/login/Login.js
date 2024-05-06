@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 import Link from 'next/link';
@@ -15,6 +15,25 @@ const LoginComponent = () => {
     const [error, setError] = useState(null);
     const [passwordValid, setPasswordValid] = useState([]); // State to track password validity
 
+
+      // Effect to populate email and password fields if "Remember me" is checked and data exists in storage
+      useEffect(() => {
+        const storedUsername = localStorage.getItem('rememberedUsername');
+        const storedPassword = localStorage.getItem('rememberedPassword');
+
+        if (storedUsername && storedPassword) {
+            setUsername(storedUsername);
+            setPassword(storedPassword);
+            setRememberMe(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (rememberMe) {
+            localStorage.setItem('rememberedUsername', username);
+            localStorage.setItem('rememberedPassword', password);
+        }
+    }, [rememberMe, username, password]);
     const handlePasswordChange = (e) => {
         // Get the new value of the password field
         const newValue = e.target.value;
@@ -65,7 +84,15 @@ const LoginComponent = () => {
             // Make sure to stop NProgress even if there's an error
             NProgress.done();
         }
-    };    
+    };   
+    
+    const handleRememberMeChange = (e) => {
+        setRememberMe(e.target.checked);
+        if (!e.target.checked) {
+            localStorage.removeItem('rememberedUsername');
+            localStorage.removeItem('rememberedPassword');
+        }
+    };
 
     return (
         <div className='login-wrapper'>
@@ -100,7 +127,7 @@ const LoginComponent = () => {
                                     name='group1'
                                     type='checkbox'
                                     checked={rememberMe}
-                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                    onChange={handleRememberMeChange}
                                 />
                                 <Link href='/reset-password'>Reset Password</Link>
                             </div>

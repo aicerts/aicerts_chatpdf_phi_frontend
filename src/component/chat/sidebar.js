@@ -47,6 +47,12 @@ const Sidebar = () => {
 
   const handleSubmit =async (e) => {
     e.preventDefault();
+
+     // Check if input value is empty
+  if (!inputValue.trim()) {
+    toast.error('Folder name cannot be empty');
+    return;
+  }
     try {
       const response = await allCommonApis(`/Folder/create-folder`, "post", {
         name: inputValue,
