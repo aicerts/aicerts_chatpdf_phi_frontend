@@ -12,10 +12,11 @@ const Widget = () => {
   const[chatMessage,setChatMessage] =useState([])
 
   const sendMessage = (userMessages) => {
+    const lastMessages = userMessages.slice(-10);
     setIsLoading(true)
     const message = {
       sourceId: sourceId,
-      messages: userMessages // Passing user messages to the API call
+      messages: lastMessages // Passing user messages to the API call
     };
     chatPDF.sendChat(message, async (response) => {
       if (response.status === "success") {
