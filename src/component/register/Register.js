@@ -135,11 +135,11 @@ const RegisterComponent = () => {
                 });
             } else {
                 // Signup failed, handle error
-                console.error('Signup failed:', data);
+                toast.error(response?.response?.data?.message || "something went wrong")
             }
         } catch (error) {
             console.error('Error:', error);
-            toast.error("something went wrong")
+            toast.error(error || "something went wrong")
 
         } finally {
             // Make sure to stop NProgress even if there's an error
