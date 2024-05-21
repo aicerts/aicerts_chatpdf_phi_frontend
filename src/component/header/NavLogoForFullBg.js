@@ -12,9 +12,9 @@ const NavLogoForFullBg = () => {
     return (
         <Navbar>
             <Image 
-                src="/logo/Logo-original.png"
-                width={284}
-                height={50}
+                src="/logo/logo-white.png"
+                width={180}
+                height={40}
                 alt='ChatPDF'
                 onClick={handleHome}
                 style={{ cursor: 'pointer' }}

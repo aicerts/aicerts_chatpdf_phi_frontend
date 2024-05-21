@@ -19,7 +19,7 @@ config = {}) => {
     // toast.error(error?.response?.data.message || 'Something went wrong');
 
     console.error('Something went wrong', error);
-    return false
+    return error?.response
   }
 };
 

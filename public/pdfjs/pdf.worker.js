@@ -103,7 +103,8 @@ export default function UploadPdf({ onFileSelect }) {
           const messageData ={
             file_id: selectedTab,
             content: message,
-            role: role
+            role: role,
+            userId: user._id
           }
        
           const response = await allCommonApis(`/Chat/add-chat`,'post',messageData);

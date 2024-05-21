@@ -12,48 +12,48 @@ const sectionInfo = [
 
 const accordionInfo = [
     {
-        'ques': 'Can ChatPDF speak my language?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
+        'ques': 'Can Trainers Assistant 365 speak my language?',
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
     },
     {
         'ques': 'Can I chat with multiple PDF files at the same time?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
     },
     {
-        'ques': 'How do I delete a PDF from ChatPDF?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
+        'ques': 'How do I delete a PDF from Trainers Assistant 365?',
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
     },
     {
         'ques': 'What is the cancellation policy?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
     },
     {
         'ques': 'Where do I post feature requests or bug reports?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
     },
     {
-        'ques': 'Is ChatPDF free?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
-    },
-    {
-        'ques': 'Are my files secure?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
-    },
-    {
-        'ques': 'Why can\'t ChatPDF see all PDF pages?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
-    },
-    {
-        'ques': 'Can ChatPDF understand images and tables in PDFs?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
-    },
-    {
-        'ques': 'Is there an API to integrate ChatPDF?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
+        'ques': 'Is Trainers Assistant 365 free?',
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
     },
     {
         'ques': 'Are my files secure?',
-        'ans' : 'Yes, ChatPDF can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, ChatPDF will answer in the language you ask. If a message isn\'t in the language you want, just ask ChatPDF to change it.'
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
+    },
+    {
+        'ques': 'Why can\'t Trainers Assistant 365 see all PDF pages?',
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
+    },
+    {
+        'ques': 'Can Trainers Assistant 365 understand images and tables in PDFs?',
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
+    },
+    {
+        'ques': 'Is there an API to integrate Trainers Assistant 365?',
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
+    },
+    {
+        'ques': 'Are my files secure?',
+        'ans' : 'Yes, Trainers Assistant 365 can read PDFs and answer questions in any language. You can upload a PDF in one language and ask questions in another. The greeting message will be in the PDF\'s language. After that, Trainers Assistant 365 will answer in the language you ask. If a message isn\'t in the language you want, just ask Trainers Assistant 365 to change it.'
     }
 ]
 

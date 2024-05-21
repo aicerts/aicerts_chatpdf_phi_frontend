@@ -39,11 +39,11 @@ const Navigation = () => {
     return (
         <Navbar expand="lg" className="navbar bg-body-tertiary">
             <Container>
-                <Navbar.Brand onClick={handleHome}>
+                <Navbar.Brand style={{ padding:"10px 0 0 0"}} onClick={handleHome}>
                     <Image 
                         src="/logo/Logo-original.png"
-                        width={284}
-                        height={50}
+                        width={180}
+                        height={40}
                         alt='ChatPDF'
                         style={{ cursor: 'pointer' }}
                     />
@@ -51,11 +51,11 @@ const Navigation = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="justify-content-end align-items-center w-100">
-                    <Nav.Link href="#home">API</Nav.Link>
+                    {/* <Nav.Link href="#home">API</Nav.Link>
                     <Nav.Link href="#faq">FAQs</Nav.Link>
                     <Nav.Link href="#link">Affiliate</Nav.Link>
                     <Nav.Link href="#link">Contact</Nav.Link>
-                    <Nav.Link href="#link">|</Nav.Link>
+                    <Nav.Link href="#link">|</Nav.Link> */}
                     <Nav.Link>
                         {isLoggedIn?(
                             <>
@@ -68,9 +68,9 @@ const Navigation = () => {
                         )    
                         }
                     </Nav.Link>
-                    <Nav.Link>
+                    {/* <Nav.Link>
                         <Button className='button golden-upload' label="Get Premium" />
-                    </Nav.Link>
+                    </Nav.Link> */}
                 </Nav>
                 </Navbar.Collapse>
             </Container>

@@ -12,6 +12,7 @@ const ChatSection = ({isLoading,setIsLoading}) => {
   const { pdfData, setPdfData, sourceId, chatMessage,setChatMessage,selectedTab, setSourceId,setSelectedTab,setSelectedPdf } = useContext(DataContext);
   const[message, setMessage]=useState(false)
   const[userMessage, setUserMessage]=useState("")
+  const[user, setUser]=useState({})
   const [showCopiedMessage, setShowCopiedMessage] = useState(false);
   const [show, setShow] = useState(false);
   const [link, setLink] = useState('');
@@ -26,7 +27,11 @@ const url = process.env.NEXT_PUBLIC_URL_LIVE;
     const storedSelectedTab = sessionStorage.getItem('selectedTab');
     const storedSelectedPdf = sessionStorage.getItem('selectedPdf');
     const storedSourceId = sessionStorage.getItem('sourceId');
+    const user = JSON.parse(localStorage.getItem('User'));
 
+    if(user){
+      setUser(user)
+    }
     // Update states if data is found in sessionStorage
     if (storedSelectedTab) {
       setSelectedTab(storedSelectedTab);
@@ -37,6 +42,7 @@ const url = process.env.NEXT_PUBLIC_URL_LIVE;
     if (storedSourceId) {
       setSourceId(storedSourceId);
     }
+   
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -57,8 +63,8 @@ useEffect(()=>{
 
 
 
-  const sendMessage = (userMessages) => {
-    const lastMessages = userMessages.slice(-10);
+  const sendMessage =async (userMessages) => {
+    const lastMessages = userMessages?.slice(-10);
     const message = {
       sourceId: sourceId,
       messages: lastMessages // Passing user messages to the API call
@@ -129,15 +135,17 @@ getMessages()
       const messageData ={
         file_id: selectedTab,
         content: message,
-        role: role
+        role: role,
+        userId: user._id
       }
       const response = await allCommonApis(`/Chat/add-chat`,'post',messageData);
       if (response.status === 200) {
+        return response.data
       }else {
         // Handle other cases where the status is not SUCCESS
         console.error('Error fetching PDF list:', response.error);
+        toast.error(response.data.message || "Something went wrong")
         setIsLoading(false);
-        
       }
     }
     catch{
@@ -156,8 +164,12 @@ getMessages()
 
     const newMessages = [...chatMessage, newMessage]; // Updating state before API call
     setChatMessage(newMessages); // Update state
-    await sendMessage(newMessages); // Call API
-    await handleChat(userMessage,"user")
+   const chat = await handleChat(userMessage,"user")
+   if(chat){
+     await sendMessage(newMessages);
+   }
+
+     // Call API
     setUserMessage("");
   }
   
