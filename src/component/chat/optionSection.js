@@ -224,7 +224,7 @@ const OptionSection = ({setIsLoading, isLoading}) => {
         role: role,
         userId: user._id
       }
-   
+  
       const response = await allCommonApis(`/Chat/add-chat`,'post',messageData);
       if (response.status === 200) {
       }else {
@@ -243,6 +243,7 @@ const OptionSection = ({setIsLoading, isLoading}) => {
     e.preventDefault()
     const formData = new FormData();
     formData.append('File', inputValue);
+    formData.append("kb_name", "aicerts")
     setIsLoading(true);
     chatPDF.uploadPDFByFile(formData, async (response) => { // Make the callback function async
       if (response.status === "success") {

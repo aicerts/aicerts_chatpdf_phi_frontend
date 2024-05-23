@@ -137,13 +137,16 @@ export default function UploadPdf({ onFileSelect }) {
         try {
             // const formData = new FormData()
             // formData.append('file', selectedPdf)
+            console.log('sourceId', sourceId)
             formData.append('user_id', user._id);  
             formData.append('sourceId', sourceId);  
             // Start NProgress when the signup process begins
             // NProgress.start();
             const response = await allCommonApis("/File/create-default-file",'post',formData)
+            console.log('response',response)
             if (response.status=="200") {
-const url = await generatePresignedUrl(response.data?.data?.fileUrl)                
+const url = await generatePresignedUrl(response.data?.data?.fileUrl)
+       console.log('url',url)         
               
                 setSelectedPdf(url)
                 setSelectedTab(response.data?.data?._id)
@@ -181,9 +184,11 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
         setIsLoading(true);
         chatPDF.uploadPDFByFile(formData, async (response) => { // Make the callback function async
           if (response.status === "success") {
-            setSourceId(response.data.sourceId);
-            if (response.data.sourceId) {
-              await handleDefaultFile(formData,response?.data?.sourceId);
+            console.log(response.data.kb_name)
+            setSourceId(response.data.kb_name);
+            formData.delete('kb_name')
+            if (response.data.kb_name) {
+              await handleDefaultFile(formData,response?.data?.kb_name);
               
               setIsLoading(false);
             } else{
@@ -197,6 +202,10 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
         });
       };
       
+      function generateName() {
+        const timestamp = new Date().getTime();
+        return `src_${timestamp}`;
+      }
 
       const handleFileUpload = async (event) => {
         const file = event.target.files[0];
@@ -229,7 +238,8 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
             setPdf(file);
             setPdfName(file.name);
             let formData = new FormData();
-            formData.append('File', file);
+            formData.append('file', file);
+            formData.append("kb_name", generateName())
     
             try {
                 await uploadPDFByFile(formData);

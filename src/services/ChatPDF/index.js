@@ -3,10 +3,11 @@ import ChatPdfAPI from "../API";
 const uploadPDFByFile = (formData, callback) => {
     ChatPdfAPI({
           method: "POST",
-          url: "/sources/add-file",
+          url: "/receive-file",
           data:formData
         })
           .then((response) => {
+            console.log('ChatPdfApi', response)
             callback({ status: "success", data: response.data });
           })
           .catch((err) => {
@@ -18,7 +19,7 @@ const uploadPDFByFile = (formData, callback) => {
 const sendChat = (chatData, callback) => {
   ChatPdfAPI({
         method: "POST",
-        url: "/chats/message",
+        url: "/chat",
         data:chatData
       })
         .then((response) => {

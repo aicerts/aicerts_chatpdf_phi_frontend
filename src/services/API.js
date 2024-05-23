@@ -3,12 +3,12 @@ import { serverConfig } from '../config/server-config';
 
 const appServerURL = serverConfig.appServerUrl;
 
-const ChatPdfAPI = (config) => {
+const ChatPdfAPI = (config) => {``
   const token = process.env.NEXT_PUBLIC_API_KEY
   if (token != null) {
     config.headers = {
       // "Content-Type": "multipart/form-data",
-      "x-api-key": token,
+      // "x-api-key": token,
     };
   }
 
