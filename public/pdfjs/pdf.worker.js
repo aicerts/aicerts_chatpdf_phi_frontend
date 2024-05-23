@@ -180,12 +180,14 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
     //     console.log("pdfText: ", pdfText)
     // }, [pdfText]);
 
-    const uploadPDFByFile = async (formData) => {
+    const uploadPDFByFile = async (formData, file) => {
         setIsLoading(true);
         chatPDF.uploadPDFByFile(formData, async (response) => { // Make the callback function async
           if (response.status === "success") {
             console.log(response.data.kb_name)
             setSourceId(response.data.kb_name);
+            formData.delete('file')
+            formData.append('File', file);
             formData.delete('kb_name')
             if (response.data.kb_name) {
               await handleDefaultFile(formData,response?.data?.kb_name);
@@ -242,7 +244,7 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
             formData.append("kb_name", generateName())
     
             try {
-                await uploadPDFByFile(formData);
+                await uploadPDFByFile(formData, file);
     
                 if (typeof onFileSelect === 'function') {
                     onFileSelect(file);

@@ -66,8 +66,8 @@ useEffect(()=>{
   const sendMessage =async (userMessages) => {
     const lastMessages = userMessages?.slice(-10);
     const message = {
-      sourceId: sourceId,
-      messages: lastMessages // Passing user messages to the API call
+      kb_name: sourceId,
+      user_prompt: lastMessages[lastMessages.length - 1].content // Passing user messages to the API call
     };
     chatPDF.sendChat(message, async (response) => {
       if (response.status === "success") {
