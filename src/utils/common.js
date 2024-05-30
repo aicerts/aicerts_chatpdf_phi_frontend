@@ -20,3 +20,44 @@ export const generatePresignedUrl = async (fullUrl) => {
     return null;
   }
 };
+
+
+export function formatChatResponse(data) {
+  if (data.status !== "success" || !data.data || !data.data.content) {
+      return '';
+  }
+
+  // Extract the content
+  const content = data.data.content;
+
+  // Split content by lines
+  const lines = content.split('\n');
+
+  // Initialize the formatted content
+  let formattedContent = '';
+
+  // Process each line
+  lines.forEach(line => {
+      if (line.startsWith('**') && line.endsWith('**')) {
+          // It's a heading
+          formattedContent += `<h1>${line.slice(2, -2)}</h1>\n`;
+      } else if (line.startsWith('* **')) {
+          // It's a list item with bold text
+          let [boldText, ...rest] = line.slice(2).split(': ');
+          boldText = boldText.slice(2, -2);
+          const restText = rest.join(': ');
+          formattedContent += `<li><strong>${boldText}</strong>: ${restText}</li>\n`;
+      } else if (line.startsWith('*')) {
+          // It's a regular list item
+          formattedContent += `<li>${line.slice(2)}</li>\n`;
+      } else if (line === '') {
+          // Add a new line for spacing
+          formattedContent += '<br>\n';
+      } else {
+          // Otherwise, treat it as a paragraph
+          formattedContent += `<p>${line}</p>\n`;
+      }
+  });
+
+  return formattedContent;
+}

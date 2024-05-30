@@ -184,7 +184,6 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
         setIsLoading(true);
         chatPDF.uploadPDFByFile(formData, async (response) => { // Make the callback function async
           if (response.status === "success") {
-            console.log(response.data.kb_name)
             setSourceId(response.data.kb_name);
             formData.delete('file')
             formData.append('File', file);
@@ -333,6 +332,7 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
                 type="file"
                 id="fileInput"
                 ref={fileInputRef}
+                accept='application/pdf'
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
             />
