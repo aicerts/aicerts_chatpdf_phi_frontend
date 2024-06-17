@@ -18,6 +18,7 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
   const [show, setShow] = useState(false);
   const [link, setLink] = useState('');
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const url = process.env.NEXT_PUBLIC_URL_LIVE;
   const handleClose = () => {
     setShow(false);
@@ -72,7 +73,6 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
         kb_name: sourceId,
         user_prompt: lastMessages // Passing user messages to the API call
       };
-      console.log('basic message',message)
       chatPDF.sendChat(message, async (response) => {
         if (response.status === "success") {
           setMessage(response.data);
@@ -303,9 +303,9 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
             </div>
         }
         <form onSubmit={(e) => { handleSubmit(e) }} className='input-container'>
-          <input className='input-enter' placeholder='Ask to PDF...' value={userMessage} onChange={handleChange} />
+          <input disabled={loading}  className='input-enter' placeholder='Ask to PDF...' value={userMessage} onChange={handleChange} />
           <div onClick={(e) => { handleSubmit(e) }} className="send-icon-container">
-            <Image alt='sendicon' width={20} height={20} className='icon-send' src='/icons/send-icon.svg' />
+            <Image alt='sendicon' width={20} height={20} className='icon-send' src={loading ? '/icons/spinner.gif':'/icons/send-icon.svg'} />
           </div>
         </form>
       </div>

@@ -40,7 +40,7 @@ export function formatChatResponse(data) {
   lines.forEach(line => {
       if (line.startsWith('**') && line.endsWith('**')) {
           // It's a heading
-          formattedContent += `<h1>${line.slice(2, -2)}</h1>\n`;
+          formattedContent += `<h2>${line.slice(2, -2)}</h2>\n`;
       } else if (line.startsWith('* **')) {
           // It's a list item with bold text
           let [boldText, ...rest] = line.slice(2).split(': ');

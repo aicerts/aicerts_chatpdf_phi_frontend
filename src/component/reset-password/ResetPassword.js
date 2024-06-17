@@ -65,25 +65,28 @@ const ResetPasswordComponent = () => {
         setPasswordMatch(password === e.target.value);
     };   
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         try {
             NProgress.start();
-            const response = await registerApi('/User/forgetPassword', 
-               {
+            registerApi('/User/forgetPassword',
+                {
                     email,
                     password,
-                    code 
-                });
-            if (response.data.status == "SUCCESS") {
-                toast.success("Password Changed Successfully")
-                setResetSuccess(false);
-                router.push("/login")
-
-            } else {
-                // Password reset failed
-                console.error("something went wrong"); // Handle error response
-            }
+                    code
+                }).then((response) => {
+                    if (response.code) {
+                        toast.error(response.response.data.message)
+                    }
+                    else if (response.data.status == "SUCCESS") {
+                        toast.success("Password Changed Successfully")
+                        setResetSuccess(false);
+                        router.push("/login")
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                    // toast.error(response.data.message)
+                })
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -91,6 +94,7 @@ const ResetPasswordComponent = () => {
             NProgress.done();
         }
     };
+
 
     const handleVerification = async (e) => {
         e.preventDefault()
