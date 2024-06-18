@@ -22,7 +22,7 @@ const handleResetZoom = () => {
   return (
     <div>
       <div className="search-container">
-        <input type="text" placeholder="Search..." className="search-input-pdf" />
+        {/* <input type="text" placeholder="Search..." className="search-input-pdf" /> */}
         <Image width={20} height={20} src="/icons/zoom-in.svg" onClick={handleZoomIn} className="icon" alt="Zoom In" title='Zoom In' />
         <Image width={20} height={20} src="/icons/reload.svg" onClick={handleResetZoom} className="icon reload-icon" alt="Reload" title='Reset' />
         <Image width={20} height={20} src="/icons/zoom-out.svg" onClick={handleZoomOut} className="icon" alt="Zoom Out" title='Zoom Out' />

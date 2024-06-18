@@ -84,7 +84,7 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
           await handleChat(formettedText, "assistant")
           const updatedMessages = [...userMessages, newAssistantMessage]; // Combine user and assistant messages
           setChatMessage(updatedMessages); // Update state after API call success
-
+          setLoading(false);
         } else {
           console.log("error");
 
@@ -170,6 +170,7 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
         role: "user",
         content: trimmedMessage
       };
+      setLoading(false);
       const newMessages = [...chatMessage, newMessage]; // Updating state before API call
       setChatMessage(newMessages); // Update state
       const chat = await handleChat(trimmedMessage, "user")

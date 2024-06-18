@@ -359,10 +359,10 @@ const url = await generatePresignedUrl(response.data?.data?.fileUrl)
                 {pdfName && <div className='file-name'>{pdfName.name}</div>}
                 <div className='link-wrapper d-flex justify-content-center'>
                     <div className='link-text'>Upload from Computer</div>
-                    <div className='gap-text'>or</div>
-                    <CustomTooltip>
+                    {/* <div className='gap-text'>or</div> */}
+                    {/* <CustomTooltip>
                         <div className='link-text' onClick={handleUrlClick}>URL</div>
-                    </CustomTooltip>
+                    </CustomTooltip> */}
                 </div>
                     <p className='text my-2'>MAX PDF (50MB)</p>
             </div>

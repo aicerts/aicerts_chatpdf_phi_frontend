@@ -125,11 +125,11 @@ const Sidebar = () => {
           <Image width={20} height={20} onClick={() => setShow(true)} src='/icons/folder-icon.svg' alt='icon2' className='icon' title='New Folder' />
         </div>
 
-        <div className='bottom-icons'>
+        {/* <div className='bottom-icons'>
           <Image width={20} height={20} src='/icons/premium-icon.svg' alt='icon1' className='icon' title='Upgrade' />
           <hr className='line' />
           <Image width={20} height={20} src='/icons/help-icon.svg' alt='icon2' className='icon' title='help' />
-        </div>
+        </div> */}
       </div>
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body className='p-5'>

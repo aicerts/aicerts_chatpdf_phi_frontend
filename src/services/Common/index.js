@@ -37,6 +37,15 @@ export const  registerApi = async (url, data = {}) => {
   }
 }
 
+export const contactUsApi = async(url, data = {}) => {
+  try {
+    const response = await preAxiosInstance.post(url, data);
+    return response;
+  } catch (err) {
+    return err
+  }
+}
+
 export const  loginPostApi = async (url, data) => {
   try {
     const response = await preAxiosInstance.post(url, data);

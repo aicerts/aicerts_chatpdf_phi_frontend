@@ -29,7 +29,7 @@ const Navigation = () => {
     };
 
     const handleSignup = () => {
-        router.push('/register')
+        router.push('/login')
     }
 
     const handleHome = () => {
@@ -63,7 +63,7 @@ const Navigation = () => {
                                     <button onClick={handleLogout} className="btn btn-primary m-2">Logout</button>
                                 </>
                         ):(
-                            <Button className='button outlined' label="Sign up" onClick={handleSignup} />
+                            <Button className='button outlined' label="Sign In" onClick={handleSignup} />
 
                         )    
                         }

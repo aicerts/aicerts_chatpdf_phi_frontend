@@ -379,7 +379,7 @@ margin-left:5px ;
 
     .search-container {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       margin-bottom: 10px;
     }
     
@@ -403,7 +403,7 @@ margin-left:5px ;
     }
     
     .reload-icon {
-      margin-left: auto;
+      // margin-left: auto;
     }
     
    

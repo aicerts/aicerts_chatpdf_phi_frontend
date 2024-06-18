@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react'
 import { formatChatResponse } from '@/utils/common';
+import { toast } from 'react-toastify';
 
 const Widget = () => {
   const router = useRouter();
@@ -11,35 +12,37 @@ const Widget = () => {
   const[userMessage, setUserMessage]=useState("")
   const[isLoading,setIsLoading]=useState(false)
   const[chatMessage,setChatMessage] =useState([])
+  
+ 
+  const sendMessage = async (userMessages) => {
+    const trimmedMessages = userMessages.map(message => message.content.trim()); // Trim leading/trailing spaces
+    const lastMessages = trimmedMessages.slice(-1)[0];
+    if (lastMessages) {
+      const message = {
+        kb_name: sourceId,
+        user_prompt: lastMessages // Passing user messages to the API call
+      };
+      chatPDF.sendChat(message, async (response) => {
+        if (response.status === "success") {
+          setMessage(response.data);
+          const newAssistantMessage = {
+            role: "assistant",
+            content: formatChatResponse(response)
+          };
+          let formettedText = formatChatResponse(response)
+          await handleChat(formettedText, "assistant")
+          const updatedMessages = [...userMessages, newAssistantMessage]; // Combine user and assistant messages
+          setChatMessage(updatedMessages); // Update state after API call success
+          setIsLoading(false);
+        } else {
+          console.log("error");
 
-  const sendMessage = (userMessages) => {
-    const lastMessages = userMessages.slice(-10);
-    setIsLoading(true)
-    const message = {
-      kb_name: sourceId,
-      user_prompt: lastMessages  // Passing user messages to the API call
-    };
-    chatPDF.sendChat(message, async (response) => {
-      if (response.status === "success") {
-        setMessage(response.data);
-        const newAssistantMessage = {
-          role: "assistant", 
-          content: response?.data?.content 
-        };
-        let formettedText = formatChatResponse(response)
-        await handleChat(formettedText, "assistant")
-        const updatedMessages = [...userMessages, newAssistantMessage]; // Combine user and assistant messages
-        setChatMessage(updatedMessages); // Update state after API call success
-        setIsLoading(false)
-        
-      } else {
-        console.log("error");
-        setIsLoading(false)
-       
-      }
-    });
+        }
+      });
+    } else {
+      toast.error("Empty Message sent")
+    }
   };
-
   const handleChat = (async (message, role) => {
 
     try {
@@ -107,6 +110,7 @@ const Widget = () => {
         role: "user",
         content: trimmedMessage
       };
+      setIsLoading(false);
       const newMessages = [...chatMessage, newMessage]; // Updating state before API call
       setChatMessage(newMessages); // Update state
       const chat = await handleChat(trimmedMessage, "user")
@@ -187,9 +191,15 @@ const Widget = () => {
 
     
 <form onSubmit={(e)=>{handleSubmit(e)}} className='input-container'>
-  <input  className='input-enter' placeholder='Ask to PDF...'  value={userMessage} onChange={handleChange} />
+  <input disabled={isLoading} className='input-enter' placeholder='Ask to PDF...'  value={userMessage} onChange={handleChange} />
   <div onClick={(e)=>{handleSubmit(e)}} className="send-icon-container">
-  <Image alt='sendicon' width={20} height={20} className='icon-send' src='/icons/send-icon.svg' />
+  <Image
+              alt="sendicon"
+              width={20}
+              height={20}
+              className="icon-send"
+              src={isLoading ? "/icons/spinner.gif" : "/icons/send-icon.svg"}
+            />
   </div>
 </form>
       </div>
