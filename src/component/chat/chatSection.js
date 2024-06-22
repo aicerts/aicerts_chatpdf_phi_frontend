@@ -78,10 +78,9 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
           setMessage(response.data);
           const newAssistantMessage = {
             role: "assistant",
-            content: formatChatResponse(response)
+            content: response
           };
-          let formettedText = formatChatResponse(response)
-          await handleChat(formettedText, "assistant")
+          await handleChat(response.data.content, "assistant")
           const updatedMessages = [...userMessages, newAssistantMessage]; // Combine user and assistant messages
           setChatMessage(updatedMessages); // Update state after API call success
           setLoading(false);
@@ -287,7 +286,7 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
                       <div
                         key={index}
                         className={`message ${message.role === 'user' ? 'user-message' : 'admin-message'}`}
-                        dangerouslySetInnerHTML={{ __html: message.content }} // Render HTML content
+                        dangerouslySetInnerHTML={{ __html: formatChatResponse(message) }} // Render HTML content
                       />
                     </div>
                   )

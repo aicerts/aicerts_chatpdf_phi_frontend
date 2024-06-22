@@ -7,7 +7,7 @@ export const generatePresignedUrl = async (fullUrl) => {
 
   const s3 = new AWS.S3();
   const params = {
-    Bucket: 'certs365',
+    Bucket: 'aichatpdf-dev',
     Key: key,
     Expires: 36000, 
   };
@@ -23,12 +23,13 @@ export const generatePresignedUrl = async (fullUrl) => {
 
 
 export function formatChatResponse(data) {
-  if (data.status !== "success" || !data.data || !data.data.content) {
-      return '';
-  }
+  console.log('dattas',data)
+  // if (data.status !== "success" || !data.data || !data.data.content) {
+  //     return '';
+  // }
 
   // Extract the content
-  const content = data.data.content;
+  const content = data.content;
 
   // Split content by lines
   const lines = content.split('\n');
