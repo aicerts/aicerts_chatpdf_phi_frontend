@@ -23,7 +23,6 @@ export const generatePresignedUrl = async (fullUrl) => {
 
 
 export function formatChatResponse(data) {
-  console.log('dattas',data)
   // if (data.status !== "success" || !data.data || !data.data.content) {
   //     return '';
   // }

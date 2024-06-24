@@ -78,7 +78,7 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
           setMessage(response.data);
           const newAssistantMessage = {
             role: "assistant",
-            content: response
+            content: response.data.content
           };
           await handleChat(response.data.content, "assistant")
           const updatedMessages = [...userMessages, newAssistantMessage]; // Combine user and assistant messages
