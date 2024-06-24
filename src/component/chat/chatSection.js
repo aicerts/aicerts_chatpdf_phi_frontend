@@ -19,7 +19,7 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
   const [link, setLink] = useState('');
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const url = process.env.NEXT_PUBLIC_URL_LIVE;
+  const url = "https://userdevapp.certs365.io";
   const handleClose = () => {
     setShow(false);
   };
