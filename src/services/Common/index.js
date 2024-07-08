@@ -72,3 +72,14 @@ export const  forgotPasswordApi = async (url, data) => {
     return false
   }
 }
+
+
+export const changeFolder = async (url, data) => {
+  try {
+    const response = await preAxiosInstance.put(url, data);
+    return response;
+  } catch (error) {
+    toast.error(error.response.data.message || 'Something went wrong');
+    return false
+  }
+}

@@ -44,7 +44,7 @@ const aboutInfo = [
 
 const About = () => {
     return (
-        <div className='about-container section-pad'>
+        <div className='about-container section-pad mt-2'>
             <Container>
                 {sectionInfo.map((item, index) => (
                     <SectionInfo
@@ -54,11 +54,11 @@ const About = () => {
                         textCenter  
                     />
                 ))}
-                <Row>
+                <Row className="row-cols-1 row-cols-md-3 g-4">
                     {aboutInfo?.map((item, index) => {
                         return(
                             <Col xs={12} md={4} lg={4} key={index}>
-                                <Card>
+                                <Card className="h-100">
                                     <CardBody>
                                         <CardImg
                                             src={item.image}

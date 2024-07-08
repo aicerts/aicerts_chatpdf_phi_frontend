@@ -2,93 +2,92 @@ import React, { useEffect, useState } from 'react';
 import SectionInfo from '@/shared/sectionInfo';
 import { Col, Container, Row } from 'react-bootstrap';
 import Image from 'next/legacy/image';
-import Link from 'next/link'
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import allCommonApis from '@/services/Common';
+import moment from 'moment';
+
 const sectionInfo = [
     {
         'title': 'Continue where you left...',
         'name' : 'Chat History' 
     }
-]
+];
 
 const PrevInfoComponent = () => {
     const router = useRouter();
+    const [chatHistory, setChatHistory] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
 
-    const [isLoggedIn, setIsLoggedIn] = useState("");
-
-
-    useEffect(()=>{
-        const user = JSON.parse(localStorage.getItem('User'))
-        if(user){
-            setIsLoggedIn(user)
+    const fetchData = async (userId) => {
+        try {
+            const response = await allCommonApis(`/Chat/chat-history/${userId}`);
+            if(response.status === 200) {
+                console.log(response.data)
+                setChatHistory(response.data);
+                console.log('chatHistory',chatHistory)
+            } else {
+                console.error("Error fetching chat history", response.error);
+            }
+        } catch (error) {
+            console.log(error);
         }
-    },[])
+    };
 
-   
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('User'));
+        if (user) {
+            setIsLoggedIn(user);
+            fetchData(user._id);
+        }
+    }, []);
+
     return (
         <div className='section-pad prev-info'>
-            <Container className='folders-container'>
-                {sectionInfo.map((item, index) => (
-                    <SectionInfo
-                        key={index}
-                        sectionName={item.name}
-                        sectionTitle={item.title}
-                        textCenter
-                        white
-                    />
-                ))}
-                <Row className='folders'>
-                    <Col xs={12} md={4} lg={4}>
-                        <div className='prev-info position-relative'>
-                            <Image
-                                src="/icons/folders.svg"
-                                layout="fill"
-                                objectFit="contain"
-                                alt="Previous information"
+            {isLoggedIn ? (
+                chatHistory.length === 0 ? (
+                    <p>No chat history found, Upload file</p>
+                ) : (
+                    <Container className='folders-container'>
+                        {sectionInfo.map((item, index) => (
+                            <SectionInfo
+                                key={index}
+                                sectionName={item.name}
+                                sectionTitle={item.title}
+                                textCenter
+                                white
                             />
-                            <div className='my-chat'>My Chat</div>
-                            <div className='file-name'>My Chat</div>
-                            <div className='last-used'>Last Used: <strong>12/04/2024</strong></div>
-                        </div>
-                    </Col>
-                    <Col xs={12} md={4} lg={4}>
-                        <div className='prev-info position-relative'>
-                            <Image
-                                src="/icons/folders.svg"
-                                layout="fill"
-                                objectFit="contain"
-                                alt="Previous information"
-                            />
-                            <div className='my-chat'>My Chat</div>
-                            <div className='file-name'>My Chat</div>
-                            <div className='last-used'>Last Used: <strong>12/04/2024</strong></div>
-                        </div>
-                    </Col>
-                    <Col xs={12} md={4} lg={4}>
-                        <div className='prev-info position-relative'>
-                            <Image
-                                src="/icons/folders.svg"
-                                layout="fill"
-                                objectFit="contain"
-                                alt="Previous information"
-                            />
-                            <div className='my-chat'>My Chat</div>
-                            <div className='file-name'>My Chat</div>
-                            <div className='last-used'>Last Used: <strong>12/04/2024</strong></div>
-                        </div>
-                    </Col>
-                </Row>
+                        ))}
+                        <Row className='folders'>
+                            {chatHistory.map((chat, index) => (
+                                <Col xs={12} md={4} lg={4} key={index}>
+                                    <div className='prev-info position-relative' onClick={() => router.push(`/chat/${chat.sourceId}`)}>
+                                        <Image
+                                            src="/icons/folders.svg"
+                                            layout="fill"
+                                            objectFit="contain"
+                                            alt="Previous information"
+                                        />
+                                        <div className='my-chat'>{chat.folder.name}</div>
+                                        <div className='file-name'>{chat.name || 'My Chat'}</div>
+                                        <div className='last-used'>Last Used: <strong>{moment(chat.created_at).format("DD-MM-YYYY HH:mm") || 'N/A'}</strong></div>
+                                    </div>
+                                </Col>
+                            ))}
+                        </Row>
+                    </Container>
+                )
+            ) : (
+                <p>Please login to see your chat history</p>
+            )}
+            {!isLoggedIn && (
                 <div className='signin text-center'>
-                {!isLoggedIn && (
-                    <>
-                        <Link href="/login">Sign In</Link>
-                        <span>&nbsp;to save your chat history.</span>
-                    </>
-                )}
+                    <Link href="/login">Sign In</Link>
+                    <span>&nbsp;to save your chat history.</span>
                 </div>
-            </Container>
+            )}
         </div>
     );
-}
+};
 
 export default PrevInfoComponent;

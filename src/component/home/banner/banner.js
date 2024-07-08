@@ -20,7 +20,7 @@ sessionStorage.clear();
                     </Col>
                 </Row>
             </Container>
-            {/* <PrevInfoComponent /> */}
+            <PrevInfoComponent />
         </div>
     );
 }

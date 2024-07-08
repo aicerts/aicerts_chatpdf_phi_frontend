@@ -2,13 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
-const DisplayPdf = ({ url, scale }) => {
+const DisplayPdf = ({ url, scale, searchQuery }) => {
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
     const [dragStart, setDragStart] = useState(null);
     const [dragging, setDragging] = useState(false);
     const containerRef = useRef(null);
     const documentRef = useRef(null);
+    const [searchResults, setSearchResults] = useState([]);
 
     pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
@@ -54,6 +55,13 @@ const DisplayPdf = ({ url, scale }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dragging, dragStart]);
 
+    useEffect(() => {
+        if (searchQuery) {
+            searchPdf();
+        } else {
+            setSearchResults([]);
+        }
+    }, [searchQuery]);
 
     return (
         <>

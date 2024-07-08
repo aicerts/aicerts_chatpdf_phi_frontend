@@ -303,6 +303,9 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
             </div>
         }
         <form onSubmit={(e) => { handleSubmit(e) }} className='input-container'>
+          <button className='delete-btn'>
+            <Image alt='delete' width={20} height={20} className='icon-delete' src="/icons/delete1.svg"/>
+          </button>
           <input disabled={loading}  className='input-enter' placeholder='Ask to PDF...' value={userMessage} onChange={handleChange} />
           <div onClick={(e) => { handleSubmit(e) }} className="send-icon-container">
             <Image alt='sendicon' width={20} height={20} className='icon-send' src={loading ? '/icons/spinner.gif':'/icons/send-icon.svg'} />
