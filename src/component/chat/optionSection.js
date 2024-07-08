@@ -505,7 +505,7 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
                     {/* Delete folder icon */}
                     {/* Conditionally render delete folder icon */}
                     <div className="folder-right">
-                      {folder.folder.name !== "Default" && (
+                      {/* {folder.folder.name !== "Default" && (
                         <Image
                           width={20}
                           height={20}
@@ -514,15 +514,26 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
                           alt="Delete Folder"
                           onClick={() => handleDeleteFolder(folder)}
                         />
-                      )}
+                      )} */}
                       <Image
-                        width={20}
-                        height={20}
+                       width={10}
+                       height={10}
+                       onClick={(e) => {
+                         handleOpen(e, folder.folder._id);
+                       }}
+                       className="add-icon-small mx-2"
+                       src="/icons/chat_1.svg"
+                       alt="Add Icon"
+                      />
+
+                      <Image
+                        width={10}
+                        height={10}
                         onClick={(e) => {
                           handleOpen(e, folder.folder._id);
                         }}
                         className="add-icon-small mx-2"
-                        src="/icons/add-file.svg"
+                        src="/icons/fi-rr-add.svg"
                         alt="Add Icon"
                       />
                     </div>
