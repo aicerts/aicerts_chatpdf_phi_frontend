@@ -1,8 +1,12 @@
 .global-button {
-    border-radius: 12px;
     border: none;
     padding: 20px 0;
-
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    -o-border-radius: 0;
+    
     &.golden {
         padding: 20px 120px;
         color: #CFA935;
@@ -31,7 +35,6 @@
         font-weight: 600;
         line-height: normal;
         padding: 12px 20px 12px 56px;
-        border-radius: 12px;
         background: rgba(207, 169, 53, 0.15);
         position: relative;
         transition: 0.5s;
@@ -62,7 +65,6 @@
         font-weight: 700;
         line-height: normal;
         padding: 12px 20px 12px 56px;
-        border-radius: 12px;
         background: $golden;
         position: relative;
         transition: 0.5s;
@@ -94,7 +96,6 @@
         font-weight: 500;
         line-height: normal;
         padding: 15px 56px 15px 24px;
-        border-radius: 12px;
         background: $golden;
         position: relative;
         transition: 0.5s;
@@ -126,7 +127,6 @@
         font-weight: 500;
         line-height: normal;
         padding: 15px 56px 15px 24px;
-        border-radius: 12px;
         background: $golden;
         position: relative;
         transition: 0.5s;
@@ -160,7 +160,6 @@
         font-style: normal;
         font-weight: 700;
         line-height: normal;
-        border-radius: 0px;
         padding: 12px 30px;
         border: 1px solid $golden;
         background-color: transparent;
@@ -208,7 +207,6 @@
     color: #fff;
     font-size: 16px;
     padding: 8px 20px;
-    border-radius: 6px;
     background-color: #dc3545;
     margin-top: 40px;
 
@@ -222,7 +220,6 @@
     color: #fff;
     font-size: 16px;
     padding: 8px 20px;
-    border-radius: 6px;
     background-color: #198754;
     margin-top: 40px;
 

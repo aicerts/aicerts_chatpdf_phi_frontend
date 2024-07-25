@@ -18,21 +18,22 @@ const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading}) => {
       setPdfName(pdfFile?.name)
     }
   }, []);
+
   return (
     <div className='main-section'>
       <div className='main-header'>
-            <Image alt='hideicon' width={20} height={20} onClick={toggleCollapse} className='hide-sidebar-icon' src='/icons/hide-sidebar.svg' />
+            <Image alt='hideicon' width={24} height={24} onClick={toggleCollapse} className='hide-sidebar-icon' src='/icons/hide-sidebar.svg' />
             <p className='header-p'>{pdfName}</p>
       </div>
       <div className='main-body'>
-  <div className='column'>
-    <Showpdf isLoading={isLoading}/>
-  </div>
-  <div className="vertical-line"></div>
-  <div  className='column'>
-    <ChatSection isLoading={isLoading} setIsLoading={setIsLoading}/>
-  </div>
-</div>
+        <div className='column'>
+          <Showpdf isLoading={isLoading}/>
+        </div>
+        <div className="vertical-line"></div>
+        <div  className='column'>
+          <ChatSection isLoading={isLoading} setIsLoading={setIsLoading}/>
+        </div>
+      </div>
 
     </div>
   )

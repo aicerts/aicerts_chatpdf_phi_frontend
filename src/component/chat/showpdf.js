@@ -3,6 +3,7 @@ import PDFList from "../pdfs/PDFList";
 import DisplayPdf from "../pdfs/displayPdf";
 import DataContext from "@/utils/DataContext";
 import Image from "next/image";
+import { Form, InputGroup } from 'react-bootstrap';
 
 const Showpdf = () => {
   const { selectedPdf } = useContext(DataContext);
@@ -28,12 +29,24 @@ const Showpdf = () => {
   return (
     <div>
       <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="search-input-pdf"
-          onChange={handleSearch}
-        />
+        <InputGroup className="pe-2">
+          <Form.Control
+            onChange={handleSearch}
+            type="text"
+            placeholder="Search..."
+            className="search-input-option rounded-0"
+            aria-describedby="search-pdf"
+            style={{ borderRight: '0' }}
+          />
+          <InputGroup.Text id="search-pdf" className="bg-white rounded-0">
+            <Image 
+              src="/icons/magnify.svg"
+              width={20}
+              height={20}
+              alt="Search for PDF"
+            />
+          </InputGroup.Text>
+        </InputGroup>
         <div className="search-btn ">
           <Image
             width={20}
@@ -49,22 +62,22 @@ const Showpdf = () => {
           <Image
             width={20}
             height={20}
-            src="/icons/reload.svg"
-            onClick={handleResetZoom}
-            className="icon reload-icon"
-            alt="Reload"
-            title="Reset"
+            src="/icons/zoom-out.svg"
+            onClick={handleZoomOut}
+            className="icon"
+            alt="Zoom Out"
+            title="Zoom Out"
           />
         </div>
         <div className="search-btn ">
           <Image
             width={20}
             height={20}
-            src="/icons/zoom-out.svg"
-            onClick={handleZoomOut}
-            className="icon"
-            alt="Zoom Out"
-            title="Zoom Out"
+            src="/icons/reload.svg"
+            onClick={handleResetZoom}
+            className="icon reload-icon"
+            alt="Reload"
+            title="Reset"
           />
         </div>
       </div>

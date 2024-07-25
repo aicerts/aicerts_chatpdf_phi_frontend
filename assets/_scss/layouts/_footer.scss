@@ -1,7 +1,16 @@
 .home-footer {
     .footer {
+        padding: 0;
         height: 400px;
         position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #181818eb;
+        }
 
         .container {
             position: absolute;
@@ -14,7 +23,7 @@
 
 .footer {
     padding: 40px 0;
-    background-image: url(/bg/footer-bg.png);
+    background-image: url(/bg/footer-bg-1.png);
     background-repeat: no-repeat;
     background-size: cover;
 

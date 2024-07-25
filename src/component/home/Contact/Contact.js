@@ -126,9 +126,10 @@ const Contact = () => {
             </Col>
             <Col xs={12} md={6} lg={6} style={{ display: "flex", alignItems: 'center' }}>
                 <Image
-                width={553}
-                height={360}
-                src="/images/Artboard.svg"
+                    width={553}
+                    height={360}
+                    src="/images/Artboard.svg"
+                    alt='Abrtboard'
                 />
             </Col>
           </Row>

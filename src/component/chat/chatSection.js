@@ -245,11 +245,11 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
         <p>Chat</p>
         <div className='chat-icons'>
           <div className="tooltip-container">
-            <Image alt='downloadicon' height={10} width={10} className='icons' src='/icons/download.svg' title='Download' onClick={exportChat} />
+            <Image alt='downloadicon' height={20} width={20} className='icons' src='/icons/download.svg' title='Download' onClick={exportChat} />
             <span className="tooltip-text">Export Chat</span>
           </div>
           <div className="tooltip-container">
-            <Image alt='shareicon' height={10} width={10} onClick={() => { handleShow() }} className='icons' src='/icons/share.svg' />
+            <Image alt='shareicon' height={20} width={20} onClick={() => { handleShow() }} className='icons' src='/icons/share.svg' />
             <span className="tooltip-text">Generate Link</span>
           </div>
         </div>
@@ -306,7 +306,7 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
           <button className='delete-btn'>
             <Image alt='delete' width={20} height={20} className='icon-delete' src="/icons/delete1.svg"/>
           </button>
-          <input disabled={loading}  className='input-enter' placeholder='Ask to PDF...' value={userMessage} onChange={handleChange} />
+          <input disabled={loading} className='input-enter rounded-0' placeholder='Ask to PDF...' value={userMessage} onChange={handleChange} />
           <div onClick={(e) => { handleSubmit(e) }} className="send-icon-container">
             <Image alt='sendicon' width={20} height={20} className='icon-send' src={loading ? '/icons/spinner.gif':'/icons/send-icon.svg'} />
           </div>

@@ -1,1 +1,10 @@
-<svg width="187px" height="187px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(-1, 0, 0, 1, 0, 0)rotate(0)" stroke="#000000" stroke-width="0.00024000000000000003"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M20 20V4H4V20H20ZM18.5 18.5H16V5.5H18.5V18.5ZM14.5 5.5V18.5H5.5V5.5H14.5Z" fill="#1F2328"></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M10.4434 12.0041L7.96967 9.53033L9.03033 8.46967L12.5647 12.0041L9.03098 15.5378L7.97032 14.4771L10.4434 12.0041Z" fill="#1F2328"></path> </g></svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="menu" clip-path="url(#clip0_554_369)">
+<path id="Vector" d="M4 20H20C20.55 20 21 19.55 21 19C21 18.45 20.55 18 20 18H4C3.45 18 3 18.45 3 19C3 19.55 3.45 20 4 20ZM4 13H15C15.55 13 16 12.55 16 12C16 11.45 15.55 11 15 11H4C3.45 11 3 11.45 3 12C3 12.55 3.45 13 4 13ZM3 5C3 5.55 3.45 6 4 6H20C20.55 6 21 5.55 21 5C21 4.45 20.55 4 20 4H4C3.45 4 3 4.45 3 5Z" fill="#323232"/>
+</g>
+<defs>
+<clipPath id="clip0_554_369">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>

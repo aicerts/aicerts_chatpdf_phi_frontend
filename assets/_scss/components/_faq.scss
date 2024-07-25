@@ -20,9 +20,17 @@
                     font-style: normal;
                     font-weight: 700;
                     line-height: normal;
-                    border-radius: 10px;
                     background: #F3F4F6;
                     margin-bottom: 5px;
+
+                    &[aria-expanded="true"] {
+                        background-color: $golden;
+                        color: #fff;
+                    }
+
+                    &:focus {
+                        box-shadow: none
+                    }
 
                     &::after {
                         background-image: url(/icons/expand.svg);
@@ -33,7 +41,7 @@
                     
                     &:not(.collapsed){
                         &::after {
-                            background-image: url(/icons/collapse.svg);
+                            background-image: url(/icons/collapse-white.svg);
                             transform: translate(0, 0);
                         }
                     }
@@ -48,7 +56,6 @@
                     font-style: normal;
                     font-weight: 500;
                     line-height: normal;
-                    border-radius: 10px;
                     border: 1px solid #E4E4E4;
                 }
             }

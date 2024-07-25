@@ -6,7 +6,7 @@ import allCommonApis from "@/services/Common";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { generatePresignedUrl } from "@/utils/common";
-import { Modal } from "react-bootstrap";
+import { Modal, Form, InputGroup } from "react-bootstrap";
 import Image from "next/image";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 
@@ -464,12 +464,24 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
     <DndContext onDragEnd={handleDragEnd}>
       <div className="options">
         {/* Search input */}
-        <input
-          onChange={handleSearchInputChange}
-          type="text"
-          placeholder="Search for PDFs"
-          className="search-input-option"
-        />
+        <InputGroup className="mt-3 pe-4 ps-4">
+          <Form.Control
+            onChange={handleSearchInputChange}
+            type="text"
+            placeholder="Search for PDFs"
+            className="search-input-option rounded-0"
+            aria-describedby="search-pdf"
+            style={{ borderRight: '0' }}
+          />
+          <InputGroup.Text id="search-pdf" className="bg-white rounded-0">
+            <Image 
+              src="/icons/search-pdf.svg"
+              width={20}
+              height={20}
+              alt="Search for PDF"
+            />
+          </InputGroup.Text>
+        </InputGroup>
         <ToastContainer />
         {/* Horizontal line */}
         <hr className="horizontal-line" />
@@ -515,26 +527,27 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
                           onClick={() => handleDeleteFolder(folder)}
                         />
                       )} */}
-                      <Image
-                       width={10}
-                       height={10}
-                       onClick={(e) => {
-                         handleOpen(e, folder.folder._id);
-                       }}
-                       className="add-icon-small mx-2"
-                       src="/icons/chat_1.svg"
-                       alt="Add Icon"
-                      />
 
                       <Image
-                        width={10}
-                        height={10}
+                        width={8}
+                        height={8}
                         onClick={(e) => {
                           handleOpen(e, folder.folder._id);
                         }}
                         className="add-icon-small mx-2"
                         src="/icons/fi-rr-add.svg"
                         alt="Add Icon"
+                      />
+                      <span>|</span>
+                      <Image
+                       width={8}
+                       height={8}
+                       onClick={(e) => {
+                         handleOpen(e, folder.folder._id);
+                       }}
+                       className="add-icon-small mx-2"
+                       src="/icons/chat_1.svg"
+                       alt="Add Icon"
                       />
                     </div>
                   </div>
@@ -555,8 +568,8 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
                             className="file file-color-golden"
                           >
                             <Image
-                              width={20}
-                              height={20}
+                              width={16}
+                              height={16}
                               className="file-small-img"
                               src={
                                 selectedTab == file._id
@@ -652,7 +665,7 @@ const DraggableFile = ({ file, children, onFileClick  }) => {
 
   return (
     <div ref={setNodeRef} style={style}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'baseline' }}>
       <div {...attributes} {...listeners} className="drag-handle">
         {/* Add a drag handle icon here */}
         <Image

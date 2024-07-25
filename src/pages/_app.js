@@ -33,7 +33,6 @@ const App = ({ Component, pageProps }) => {
 
   return (
     <DataContext.Provider value={{setFolders:setFolders,folders:folders,pdfData:pdfData,setPdfData:setPdfData, sourceId:sourceId,setSourceId:setSourceId,chatMessage:chatMessage,setChatMessage:setChatMessage,selectedPdf:selectedPdf,setSelectedPdf:setSelectedPdf,selectedTab:selectedTab,setSelectedTab:setSelectedTab,pdfList:pdfList,setPdfList:setPdfList }}>
-      
       <Component {...pageProps} />
     </DataContext.Provider>
   );
