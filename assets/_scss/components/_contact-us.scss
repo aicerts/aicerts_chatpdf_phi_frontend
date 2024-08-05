@@ -1,0 +1,50 @@
+.contact-wrapper {
+    background: #f8fbfd;
+
+    .contact-container {
+        background-image: url("../../../public/images/Get\ In\ Touch\ BG.svg");
+        background-color: #fdf9f1;
+        height: 710px;
+        position: relative;
+        z-index: 9;
+        padding: 60px;
+        
+        .form-container {
+            margin-top: 40px;
+
+            .form-label {
+                color: #5A677E;
+                font-family: $Montserrat;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                margin-bottom: 15px;
+            }
+
+            .form-control {
+                padding: 16px 20px;
+                border-radius:0;
+                -webkit-border-radius:0;
+                -moz-border-radius:0;
+                -ms-border-radius:0;
+                -o-border-radius:0;
+                border: 1px solid #D5DDEA;
+                color: #5A677E;
+                font-family: $Montserrat;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+
+                &:focus-visible {
+                    outline: none;
+                }
+
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+        }
+    }
+}

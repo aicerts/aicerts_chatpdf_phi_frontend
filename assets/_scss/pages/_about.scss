@@ -1,0 +1,78 @@
+.about-container {
+    .section-details {
+        margin-bottom: 40px;
+    }
+    
+    .col-lg-4 {
+        &:nth-child(2),
+        &:nth-child(3),
+        &:nth-child(5),
+        &:nth-child(6) {
+            .card {
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: -9px;
+                    left: -25px;
+                    height: 100%;
+                    width: 1px;
+                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='234' viewBox='0 0 1 234' fill='none'%3E%3Cline x1='0.5' y1='0.5' x2='0.5' y2='233.5' stroke='%23BFC0C2' stroke-linecap='round' stroke-dasharray='10 10'/%3E%3C/svg%3E");
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                }
+            }
+        }
+
+        &:nth-child(1),
+        &:nth-child(2),
+        &:nth-child(3) {
+            .card {
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    height: 1px;
+                    width: 95%;
+                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='384' height='1' viewBox='0 0 384 1' fill='none'%3E%3Cline x1='0.5' y1='0.5' x2='383.5' y2='0.5' stroke='%23BFC0C2' stroke-linecap='round' stroke-dasharray='10 10'/%3E%3C/svg%3E");
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                }
+            }
+        }
+    }
+    .card {
+        border: none;
+        border-top: none;
+        border-radius: 0;
+        position: relative;
+
+        .card-body {
+            padding-left: 0;
+
+            .card-img {
+                width: 95px;
+                height: 120px;
+            }
+
+            .card-title {
+                color: #1C1F30;
+                font-family: $Montserrat;
+                font-size: 20px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: normal;
+                margin: 20px 0 10px;
+            }
+
+            .card-text {
+                color: #4D5060;
+                font-family: $Montserrat;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+            }
+        }
+    }
+}

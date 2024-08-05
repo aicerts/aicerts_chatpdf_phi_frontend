@@ -1,0 +1,106 @@
+.banner {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: -26em;
+    font-family: $font-family;
+    padding: 80px 0 0;
+
+    .banner-content {
+        .title {
+            color: $white;
+            font-size: 40px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin-bottom: 20px;
+            font-family: $font-family;
+        }
+
+        .sub-content {
+            color: $white;
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            font-family: $font-family;
+        }
+    }
+
+    .upload-container {
+        border: 2px dashed #F3F4F6;
+        padding: 10px;
+        margin-top: $margin-top-40;
+        border-radius:10px;
+        -webkit-border-radius:10px;
+        -moz-border-radius:10px;
+        -ms-border-radius:10px;
+        -o-border-radius:10px;
+        cursor: pointer;
+        
+        .upload-file {
+            text-align: center;
+            padding: 58px 0;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #F3F4F6 0%, #F3F4F6 100%);
+            backdrop-filter: blur(2px);
+
+            .cloud-upload {
+                width: 49px;
+                height: 35.654px;
+                position: relative;
+                margin: 0 auto;
+            }
+
+            .file-name {
+                color: #4D5060;
+                font-family: $Poppins;
+                font-size: 20px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: normal;
+                padding: 20px 0;
+            }
+
+            .link-wrapper {
+                column-gap: 6px;
+
+                .link-text {
+                    color: #0D99FF;
+                    font-family: $Poppins;
+                    font-size: 20px;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+
+                .gap-text {
+                    color: $black;
+                    font-family: $Poppins;
+                    font-size: 20px;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                }
+            }
+
+            .text {
+                color: #5B5A5F;
+                font-family: $Poppins;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+            }
+        }
+    }
+}
+
+.custom-tooltip {
+    top: 70px !important;
+    --bs-tooltip-bg: #fff;
+    width: 600px;
+
+    .tooltip-inner {
+        max-width: 600px;
+    }
+}

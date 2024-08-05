@@ -1,0 +1,67 @@
+.prev-info {
+    background: linear-gradient(180deg, rgba(28, 31, 48, 0.00) 0%, #1C1F30 20.53%);
+
+    .folders-container {
+        border-top: 1px solid #fff;
+        padding-top: 50px;
+
+        .folders {
+            margin-top: 60px;
+            cursor: pointer;
+
+            .prev-info {
+                height: 250px;
+
+                .my-chat {
+                    position: absolute;
+                    top: 3.5em;
+                    left: 2.3em;
+                    color: #1C1F30;
+                    font-family: $Montserrat;
+                    font-size: 20px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                }
+
+                .file-name {
+                    position: absolute;
+                    top: 7em;
+                    left: 3em;
+                    color: #CFA935;
+                    font-family: $Montserrat;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: normal;
+                }
+
+                .last-used {
+                    position: absolute;
+                    bottom: 1.5em;
+                    left: 3em;
+                    color: #000;
+                    font-family: $Montserrat;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                }
+            }
+        }
+
+        .signin {
+            color: #fff;
+            font-family: $Poppins;
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            padding-top: 80px;
+            
+            a {
+                color: #CFA935;
+            }
+        }
+    }
+}

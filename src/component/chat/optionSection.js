@@ -1,0 +1,704 @@
+import React, { useContext, useEffect, useState } from "react";
+import DataContext from "@/utils/DataContext";
+import chatPDF from "@/services/ChatPDF";
+import { useRouter } from "next/router";
+import allCommonApis from "@/services/Common";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { generatePresignedUrl } from "@/utils/common";
+import { Modal, Form, InputGroup } from "react-bootstrap";
+import Image from "next/image";
+import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
+
+const OptionSection = ({ setIsLoading, isLoading }) => {
+  const router = useRouter();
+  const {
+    setPdfList,
+    folders,
+    setFolders,
+    pdfList,
+    setSelectedPdf,
+    setSourceId,
+    sourceId,
+    setChatMessage,
+    chatMessage,
+    selectedPdf,
+    selectedTab,
+    setSelectedTab,
+  } = useContext(DataContext);
+  const [user, setUser] = useState({});
+  const [show, setShow] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [folder_id, setFolder_id] = useState("");
+  const [draggingFile, setDraggingFile] = useState(null);
+  const [dragOverFolderId, setDragOverFolderId] = useState(null);
+  
+  // State to manage folder visibility
+  const [filteredFilesAndFolders, setFilteredFilesAndFolders] = useState([]);
+
+  // Effect to filter files and folders based on search input
+  useEffect(() => {
+    if (typeof inputValue === "string") {
+      if (inputValue === "") {
+        // If search input is empty, display all files and folders
+        setFilteredFilesAndFolders(folders);
+      } else {
+        // Filter files and folders based on search input
+        const filtered = folders
+          .map((folder) => {
+            const filteredFiles = folder?.files?.filter(
+              (file) =>
+                typeof file?.name === "string" &&
+                file.name.toLowerCase().includes(inputValue.toLowerCase())
+            );
+            if (filteredFiles.length > 0) {
+              return {
+                ...folder,
+                files: filteredFiles,
+              };
+            }
+            return null;
+          })
+          .filter((folder) => folder !== null);
+        setFilteredFilesAndFolders(filtered);
+      }
+    }
+  }, [inputValue, folders]);
+
+  // Handler for search input change
+  const handleSearchInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage?.getItem("User"));
+    if (user) {
+      setUser(user);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Retrieve data from sessionStorage
+    const storedSelectedTab = sessionStorage.getItem("selectedTab");
+    const storedSelectedPdf = sessionStorage.getItem("selectedPdf");
+    const storedSourceId = sessionStorage.getItem("sourceId");
+
+    // Update states if data is found in sessionStorage
+    if (storedSelectedTab) {
+      setSelectedTab(storedSelectedTab);
+    }
+    if (storedSelectedPdf) {
+      setSelectedPdf(storedSelectedPdf);
+    }
+    if (storedSourceId) {
+      setSourceId(storedSourceId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getMessages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTab]);
+
+  const handleClose = () => {
+    setShow(false);
+    setInputValue(""); // Clear input value when closing modal
+  };
+
+  const handleDragOverFolder = (folderId) => {
+    setDragOverFolderId(folderId);
+  };
+
+  const handleDragLeaveFolder = () => {
+    setDragOverFolderId(null);
+  };
+
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    console.log(active, over)
+    setDraggingFile(null);
+    if (over && active.data.current.file && over.data.current.folder) {
+      const fileId = active.id;
+      const newFolderId = over.id;
+      const response = await allCommonApis(
+        `/File/change-folder/${fileId}`,
+        "put",
+        { folder_id: newFolderId }
+      );
+      if (response.status === 200) {
+        fetchPDFList()
+      } else {
+        // Handle other cases where the status is not SUCCESS
+        console.error("Error fetching PDF list:", response.error);
+        setIsLoading(false);
+      }
+
+    }
+
+  };
+
+  const getMessages = async () => {
+    try {
+      const response = await allCommonApis(
+        `/Chat/get-file-chat/${selectedTab}`
+      );
+      if (response.status === 200) {
+        setChatMessage(response?.data?.data?.messages);
+      } else {
+        // Handle other cases where the status is not SUCCESS
+        console.error("Error fetching PDF list:", response.error);
+        setIsLoading(false);
+      }
+    } catch {
+      // Handle other cases where the status is not SUCCESS
+      toast.error("error fetching chats");
+      setIsLoading(false);
+    }
+  };
+  async function fetchPDFList() {
+    const user = JSON.parse(localStorage?.getItem("User"));
+    try {
+      const response = await allCommonApis(
+        `/Folder/get-all-folders/${user._id}`
+      );
+      if (response.status === 200) {
+        // Set PDF list
+        setPdfList(response?.data?.data);
+        let selectedTabFromSession = sessionStorage.getItem("selectedTab");
+        let selectedPdfFromSession = sessionStorage.getItem("selectedPdf");
+        let sourceIdFromSession = sessionStorage.getItem("sourceId");
+
+        if (
+          selectedTabFromSession &&
+          selectedPdfFromSession &&
+          sourceIdFromSession
+        ) {
+          setSelectedTab(selectedTabFromSession);
+          setSelectedPdf(selectedPdfFromSession);
+          setSourceId(sourceIdFromSession);
+        } else if (response?.data?.data[0]?.files[0]) {
+          const url = await generatePresignedUrl(
+            response?.data?.data[0]?.files[0]?.fileUrl
+          );
+          setSelectedTab(response?.data?.data[0]?.files[0]?._id);
+          setSelectedPdf(url);
+          setSourceId(response?.data?.data[0]?.files[0]?.sourceId);
+          sessionStorage.setItem(
+            "selectedTab",
+            response?.data?.data[0]?.files[0]?._id
+          );
+          sessionStorage.setItem("selectedPdf", url);
+          sessionStorage.setItem(
+            "sourceId",
+            response?.data?.data[0]?.files[0]?.sourceId
+          );
+        }
+
+        // Modify data and set folders
+        const modifiedData = response?.data?.data?.map((item) => {
+          return {
+            folder:
+              item.folder.name === "___default___"
+                ? { ...item.folder, name: "Default" }
+                : item.folder,
+            files: item.files,
+            isOpen: folder_id
+              ? item.folder._id === folder_id
+              : item.folder.name === "___default___", // Set isOpen based on folderId
+          };
+        });
+
+        // Reorder the folders so that "Default" comes first
+        const sortedFolders = modifiedData.sort((a, b) => {
+          if (a.folder.name === "Default") return -1;
+          if (b.folder.name === "Default") return 1;
+          return 0;
+        });
+
+        // Set the folders
+        setFolders(sortedFolders);
+      } else {
+        // Handle other cases where the status is not SUCCESS
+        console.error("Error fetching PDF list:", response.error);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching PDF list:", error);
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchPDFList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const toggleFolder = (index) => {
+    const updatedFolders = folders.map((folder, i) => ({
+      ...folder,
+      isOpen: i === index ? !folder.isOpen : false,
+    }));
+    setFolders(updatedFolders);
+  };
+
+  useEffect(() => {
+    if (selectedPdf) {
+      // setSelectedTab(pdfFile?.name)
+      handleClickPdf(selectedPdf);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleOpen = (e, id) => {
+    e.stopPropagation();
+    setShow(true);
+    setFolder_id(id);
+  };
+
+  function generateName() {
+    const timestamp = new Date().getTime();
+    return `src_${timestamp}`;
+  }
+
+  const sendMessage = (userMessages, sourceId) => {
+    setIsLoading(true);
+    const lastMessages = userMessages.slice(-10);
+    const message = {
+      sourceId: sourceId,
+      messages: lastMessages, // Passing user messages to the API call
+    };
+    chatPDF.sendChat(message, async (response) => {
+      if (response.status === "success") {
+        await handleChat(response?.data?.content, "assistant");
+
+        const newAssistantMessage = {
+          role: "assistant",
+          content: response?.data?.content,
+        };
+        const updatedMessages = [...userMessages, newAssistantMessage]; // Combine user and assistant messages
+        setChatMessage(updatedMessages); // Update state after API call success
+        setIsLoading(false);
+      } else {
+        console.log("error");
+        setIsLoading(false);
+      }
+    });
+  };
+  useEffect(() => {
+    console.log(selectedTab, "tab");
+  }, [selectedTab]);
+
+  const handleChat = async (message, role) => {
+    try {
+      const messageData = {
+        file_id: selectedTab,
+        content: message,
+        role: role,
+        userId: user._id,
+      };
+
+      const response = await allCommonApis(
+        `/Chat/add-chat`,
+        "post",
+        messageData
+      );
+      if (response.status === 200) {
+      } else {
+        // Handle other cases where the status is not SUCCESS
+        console.error("Error fetching PDF list:", response.error);
+        setIsLoading(false);
+      }
+    } catch {
+      console.error("Error fetching PDF list:", error);
+      setIsLoading(false);
+    }
+  };
+  const uploadPDFByFile = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("file", inputValue);
+    formData.append("kb_name", generateName());
+    setIsLoading(true);
+    chatPDF.uploadPDFByFile(formData, async (response) => {
+      // Make the callback function async
+      if (response.status === "success") {
+        setSourceId(response.data.kb_name);
+        formData.delete("file");
+        formData.append("File", inputValue);
+        formData.delete("kb_name");
+        if (response.data.kb_name) {
+          await handleFile(response?.data?.kb_name);
+
+          setIsLoading(false);
+        } else {
+          toast.error("Cannot read the PDF");
+          setIsLoading(false);
+        }
+      } else {
+        toast.error("Failed to upload pdf");
+        setIsLoading(false);
+      }
+    });
+  };
+
+  const handleFile = async (sourceId) => {
+    const formData = new FormData();
+    formData.append("folder_id", folder_id);
+    formData.append("sourceId", sourceId);
+    formData.append("File", inputValue);
+
+    try {
+      const response = await allCommonApis(
+        `/File/create-file`,
+        "post",
+        formData
+      );
+      if (response.status === 200) {
+        // Update selectedTab, selectedPdf, and sourceId states
+        const url = await generatePresignedUrl(response?.data?.data?.fileUrl);
+        setSelectedPdf(url);
+        setSelectedTab(response?.data?.data?._id);
+        setSourceId(response?.data?.data?.sourceId);
+
+        // Update sessionStorage
+        sessionStorage.setItem("selectedTab", response?.data?.data?._id);
+        sessionStorage.setItem("selectedPdf", url);
+        sessionStorage.setItem("sourceId", response?.data?.data?.sourceId);
+
+        await fetchPDFList();
+        handleClose();
+        toast.success("File Added Successfully");
+      } else {
+        // Handle other cases where the status is not SUCCESS
+        toast.error("Error Adding File");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      // Handle other cases where the status is not SUCCESS
+      toast.error("Error adding File");
+      setIsLoading(false);
+    }
+  };
+
+  const handleClickPdf = async (file) => {
+    if (draggingFile) return; // Don't process click if dragging
+    try {
+      const url = await generatePresignedUrl(file.fileUrl);
+      setSelectedPdf(url);
+      setSelectedTab(file?._id);
+      setSourceId(file.sourceId);
+      router.push(`/chat/${file.sourceId}`);
+      sessionStorage.setItem("selectedTab", file?._id);
+      sessionStorage.setItem("selectedPdf", url);
+      sessionStorage.setItem("sourceId", file.sourceId);
+      if (!chatMessage.length >= 1) {
+        await handleSendMessage(file.sourceId);
+      }
+      // setSelectedPdf(blob);
+    } catch (error) {
+      // toast.error("unable to fetch pdf data")
+      console.error("Error fetching or uploading PDF file:", error);
+    }
+  };
+  const handleSendMessage = async (sourceId) => {
+    const messages = [
+      {
+        role: "user",
+        content: "what questions can I ask in this PDF?",
+      },
+    ];
+
+    setChatMessage(messages); // Update state
+    await sendMessage(messages, sourceId); // Call API
+  };
+
+  const handleFileUpload = (file) => {
+    setInputValue(file);
+  };
+
+  const handleDeleteFile = async (file_id) => {
+    try {
+      const response = await allCommonApis(
+        `/File/delete-File/${file_id}`,
+        "delete"
+      );
+      if (response.status === 200) {
+        fetchPDFList();
+        toast.success("File deleted Successfully");
+      } else {
+        // Handle other cases where the status is not SUCCESS
+        toast.error("Error deleting File");
+        setIsLoading(false);
+      }
+    } catch {
+      // Handle other cases where the status is not SUCCESS
+      toast.error("Error deleting File");
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteFolder = async (folder) => {
+    try {
+      console.log(folder)
+      // const response = await allCommonApis(
+      //   `/Folder/delete-Folder/${folder_id}`,
+      //   "delete"
+      // );
+      if (response.status === 200) {
+        fetchPDFList();
+        toast.success("Folder deleted Successfully");
+      } else {
+        // Handle other cases where the status is not SUCCESS
+        toast.error("Error deleting Folder");
+        setIsLoading(false);
+      }
+    } catch {
+      // Handle other cases where the status is not SUCCESS
+      toast.error("Error deleting Folder");
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <DndContext onDragEnd={handleDragEnd}>
+      <div className="options">
+        {/* Search input */}
+        <InputGroup className="mt-3 pe-4 ps-4">
+          <Form.Control
+            onChange={handleSearchInputChange}
+            type="text"
+            placeholder="Search for PDFs"
+            className="search-input-option rounded-0"
+            aria-describedby="search-pdf"
+            style={{ borderRight: '0' }}
+          />
+          <InputGroup.Text id="search-pdf" className="bg-white rounded-0">
+            <Image 
+              src="/icons/search-pdf.svg"
+              width={20}
+              height={20}
+              alt="Search for PDF"
+            />
+          </InputGroup.Text>
+        </InputGroup>
+        <ToastContainer />
+        {/* Horizontal line */}
+        <hr className="horizontal-line" />
+
+        {/* Folders */}
+        <div className="folder-container">
+          {filteredFilesAndFolders.length === 0 ? (
+            <div className="no-files-found">No PDFs found</div>
+          ) : (
+            filteredFilesAndFolders.map((folder, index) => (
+              <DroppableFolder
+                key={index}
+                folder={folder.folder}
+                onDragOver={handleDragOverFolder}
+                onDragLeave={handleDragLeaveFolder}
+              >
+                <div key={index} className="folder">
+                  {/* Folder icon, name, and delete button */}
+                  <div className="folder-info" onClick={() => toggleFolder(index)}>
+                    <div className="folder-icon">
+                      <Image
+                        width={20}
+                        height={20}
+                        className="folder-icon-small"
+                        src="/icons/folder-icon-small.svg"
+                        alt="Folder Icon"
+                      />
+                      <div>
+                        <span className="folder-name">{folder?.folder?.name}</span>
+                      </div>
+                    </div>
+
+                    {/* Delete folder icon */}
+                    {/* Conditionally render delete folder icon */}
+                    <div className="folder-right">
+                      {/* {folder.folder.name !== "Default" && (
+                        <Image
+                          width={20}
+                          height={20}
+                          className="icons"
+                          src="/icons/delete.svg"
+                          alt="Delete Folder"
+                          onClick={() => handleDeleteFolder(folder)}
+                        />
+                      )} */}
+
+                      <Image
+                        width={8}
+                        height={8}
+                        onClick={(e) => {
+                          handleOpen(e, folder.folder._id);
+                        }}
+                        className="add-icon-small mx-2"
+                        src="/icons/fi-rr-add.svg"
+                        alt="Add Icon"
+                      />
+                      <span>|</span>
+                      <Image
+                       width={8}
+                       height={8}
+                       onClick={(e) => {
+                         handleOpen(e, folder.folder._id);
+                       }}
+                       className="add-icon-small mx-2"
+                       src="/icons/chat_1.svg"
+                       alt="Add Icon"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Files */}
+                  {(folder.isOpen || dragOverFolderId === folder.folder._id) && (
+                    <div className="files-container">
+                      {folder.files.length === 0 ? (
+                        <div className="empty-folder-message">Folder is empty</div>
+                      ) : (
+                        folder.files.map((file, idx) => (
+                          <DraggableFile key={file._id} file={file} onFileClick={handleClickPdf}>
+                          <div
+                            key={idx}
+                            style={{
+                              background: selectedTab == file._id ? "#CFA935" : "#F3F4F6",
+                            }}
+                            className="file file-color-golden"
+                          >
+                            <Image
+                              width={16}
+                              height={16}
+                              className="file-small-img"
+                              src={
+                                selectedTab == file._id
+                                  ? "/icons/file-small.svg"
+                                  : "/icons/file-small-gray.svg"
+                              }
+                              alt="File Icon"
+                            />
+                            <span
+                              className="file-name"
+                              style={{
+                                color: selectedTab == file._id ? "#FFFFFF" : "#000000",
+                              }}
+                            >
+                              {file.name}
+                            </span>
+                            {/* <Image width={20} height={20}
+                        className='icons'
+                        src='/icons/delete.svg'
+                        alt='Delete File'
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent event bubbling to the folder toggle
+                          handleDeleteFile(file._id);
+                        }}
+                      /> */}
+                          </div>
+                        </DraggableFile>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              </DroppableFolder>
+            ))
+          )}
+        </div>
+
+        <Modal
+          onHide={handleClose}
+          className="loader-modal text-center"
+          show={show}
+          centered
+        >
+          <Modal.Body className="p-5">
+            {isLoading ? (
+              <div className="d-flex justify-content-center align-items-center">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={uploadPDFByFile}>
+                <div className="form-group">
+                  {/* Replace text input with file input */}
+                  <input
+                    type="file"
+                    className="form-control"
+                    accept="application/pdf"
+                    onChange={(e) => handleFileUpload(e.target.files[0])} // Call handleFileUpload with the selected file
+                    required
+                  />
+                </div>
+                <button type="submit" className="btn btn-success m-2">
+                  Upload
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-warning"
+                  onClick={handleClose}
+                >
+                  Cancel
+                </button>
+              </form>
+            )}
+          </Modal.Body>
+        </Modal>
+      </div>
+    </DndContext>
+  );
+};
+
+const DraggableFile = ({ file, children, onFileClick  }) => {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: file._id,
+    data: { file },
+  });
+
+  const style = transform
+    ? {
+      transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    }
+    : undefined;
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <div style={{ display: 'flex', alignItems: 'baseline' }}>
+      <div {...attributes} {...listeners} className="drag-handle">
+        {/* Add a drag handle icon here */}
+        <Image
+          width={20}
+          height={20}
+          src="/icons/drag-handle.svg"
+          alt="Drag Handle"
+        />
+      </div>
+      <div style={{ width: '90%' }} onClick={() => onFileClick(file)}>
+        {children}
+      </div>
+      </div>
+    </div>
+  );
+};
+
+export default OptionSection;
+
+const DroppableFolder = ({ folder, children, onDragOver, onDragLeave }) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id: folder._id,
+    data: { folder },
+  });
+
+  useEffect(() => {
+    if (isOver) {
+      onDragOver(folder._id);
+    } else {
+      onDragLeave();
+    }
+  }, [isOver, folder._id, onDragOver, onDragLeave]);
+
+  return <div ref={setNodeRef}>{children}</div>;
+};
+
