@@ -551,6 +551,10 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        
+        &.active {
+          background-color: #edfff5;
+        }
 
       }
 
@@ -574,6 +578,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         max-width: calc(100% - 30px);
+        width: 200px;
         margin-right: 5px;
         display: flex;
       }
