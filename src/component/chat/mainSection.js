@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Showpdf from './showpdf';
 import ChatSection from './chatSection';
-import DataContext from '@/utils/DataContext';
 import Image from 'next/image';
 
-const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading}) => {
-  const { selectedPdf } = useContext(DataContext);
-  const [pdfName, setPdfName] = useState("")
+const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading, childData}) => {
+  const [pdfName, setPdfName] = useState("");
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -14,8 +12,7 @@ const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading}) => {
   useEffect(() => {
     const pdfFileString = sessionStorage.getItem("pdfFile");
     if (pdfFileString) {
-      const pdfFile = JSON.parse(pdfFileString);
-      setPdfName(pdfFile?.name)
+      setPdfName(pdfFileString)
     }
   }, []);
 
@@ -31,7 +28,7 @@ const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading}) => {
         </div>
         <div className="vertical-line"></div>
         <div  className='column'>
-          <ChatSection isLoading={isLoading} setIsLoading={setIsLoading}/>
+          <ChatSection isLoading={isLoading} setIsLoading={setIsLoading} childData={childData}/>
         </div>
       </div>
 

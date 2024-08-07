@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { formatChatResponse } from '@/utils/common';
 
-const ChatSection = ({ isLoading, setIsLoading }) => {
+const ChatSection = ({ isLoading, setIsLoading, childData }) => {
   const { pdfData, setPdfData, sourceId, chatMessage, setChatMessage, selectedTab, setSourceId, setSelectedTab, setSelectedPdf } = useContext(DataContext);
   const [message, setMessage] = useState(false)
   const [userMessage, setUserMessage] = useState("")
@@ -23,6 +23,12 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
   const handleClose = () => {
     setShow(false);
   };
+  const [activeFolderIndex, setActiveFolderIndex] = useState(null);
+
+  useEffect(() => {
+    const storedSelectedFolder = sessionStorage.getItem('folderKbName');
+    setActiveFolderIndex(storedSelectedFolder);
+  }, []);
 
   useEffect(() => {
     // Retrieve data from sessionStorage
@@ -48,7 +54,6 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   const handleShow = (() => {
     setShow(true)
     setLink(`${url}/widget/${sourceId}`)
@@ -62,8 +67,6 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.id])
-
-
 
   const sendMessage = async (userMessages) => {
     const trimmedMessages = userMessages.map(message => message.content.trim()); // Trim leading/trailing spaces
@@ -130,8 +133,6 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
     scrollToBottom();
   }, [chatMessage]);
 
-
-
   const handleChange = (e) => {
     setUserMessage(e.target.value);
   };
@@ -145,7 +146,7 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
         role: role,
         userId: user._id
       }
-      const response = await allCommonApis(`/Chat/add-chat`, 'post', messageData);
+      const response = await allCommonApis(`/single_chat`, 'post', messageData);
       if (response.status === 200) {
         return response.data
       } else {
@@ -175,12 +176,88 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
       const chat = await handleChat(trimmedMessage, "user")
       if (chat) {
         await sendMessage(newMessages);
+      }  
+      // Call API
+      setUserMessage("");
+    } else {
+      // toast.error("Empty message entered Please enter a message to send")
+    }
+  }
+
+  const handleChatFolder = (async (message, role) => {
+
+    try {
+      const messageData = {
+        kb_Name: activeFolderIndex,
+        content: message,
+        role: role,
+        userId: user._id
+      }
+      const response = await allCommonApis(`/chat`, 'post', messageData);
+      if (response.status === 200) {
+        return response.data
+      } else {
+        // Handle other cases where the status is not SUCCESS
+        console.error('Error fetching PDF list:', response.error);
+        toast.error(response.data.message || "Something went wrong")
+        setIsLoading(false);
+      }
+    }
+    catch (error) {
+      console.error('Error fetching PDF list:', error);
+      setIsLoading(false);
+    }
+  })
+
+  const sendMessageFolder = async (userMessages) => {
+    const trimmedMessages = userMessages.map(message => message.content.trim()); // Trim leading/trailing spaces
+    const lastMessages = trimmedMessages.slice(-1)[0];
+    if (lastMessages) {
+      const message = {
+        kb_name: activeFolderIndex,
+        user_prompt: lastMessages // Passing user messages to the API call
+      };
+      chatPDF.sendChat(message, async (response) => {
+        if (response.status === "success") {
+          setMessage(response.data);
+          const newAssistantMessage = {
+            role: "assistant",
+            content: response.data.content
+          };
+          await handleChatFolder(response.data.content, "assistant")
+          const updatedMessages = [...userMessages, newAssistantMessage]; // Combine user and assistant messages
+          setChatMessage(updatedMessages); // Update state after API call success
+          setLoading(false);
+        } else {
+          console.log("error");
+
+        }
+      });
+    } else {
+      toast.error("Empty Message sent")
+    }
+  };
+
+  const handleSubmitFolder = async (e) => {
+    e.preventDefault();
+    const trimmedMessage = userMessage.trim();
+    if (trimmedMessage) {
+      const newMessage = {
+        role: "user",
+        content: trimmedMessage
+      };
+      setLoading(false);
+      const newMessages = [...chatMessage, newMessage]; // Updating state before API call
+      setChatMessage(newMessages); // Update state
+      const chat = await handleChatFolder(trimmedMessage, "user")
+      if (chat) {
+        await sendMessageFolder(newMessages);
       }
   
       // Call API
       setUserMessage("");
     } else {
-      toast.error("Empty message entered Please enter a message to send")
+      // toast.error("Empty message entered Please enter a message to send")
     }
   }
 
@@ -237,8 +314,6 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
 
   // await sendMessage(messages)
   // },[])
-
-
   return (
     <div style={{ height: "100%" }}>
       <div className='chat-header'>
@@ -302,15 +377,29 @@ const ChatSection = ({ isLoading, setIsLoading }) => {
               <div ref={messagesEndRef} />
             </div>
         }
-        <form onSubmit={(e) => { handleSubmit(e) }} className='input-container'>
-          <button className='delete-btn'>
-            <Image alt='delete' width={20} height={20} className='icon-delete' src="/icons/delete1.svg"/>
-          </button>
-          <input disabled={loading} className='input-enter rounded-0' placeholder='Ask to PDF...' value={userMessage} onChange={handleChange} />
-          <div onClick={(e) => { handleSubmit(e) }} className="send-icon-container">
-            <Image alt='sendicon' width={20} height={20} className='icon-send' src={loading ? '/icons/spinner.gif':'/icons/send-icon.svg'} />
-          </div>
-        </form>
+         
+        {childData ? 
+          (
+            <form onClick={(e) => { handleSubmit(e) }} className='input-container'>
+              <button className='delete-btn'>
+                <Image alt='delete' width={20} height={20} className='icon-delete' src="/icons/delete1.svg"/>
+              </button>
+              <input disabled={loading} className='input-enter rounded-0' placeholder='Ask to PDF...' value={userMessage} onChange={handleChange} />
+              <div onClick={(e) => { handleSubmit(e) }} className="send-icon-container">
+                <Image alt='sendicon' width={20} height={20} className='icon-send' src={loading ? '/icons/spinner.gif':'/icons/send-icon.svg'} />
+              </div>
+            </form>
+          ) : (            
+            <form onClick={(e) => { handleSubmitFolder(e) }} className='input-container'>
+              <button className='delete-btn'>
+                <Image alt='delete' width={20} height={20} className='icon-delete' src="/icons/delete1.svg"/>
+              </button>
+              <input disabled={loading} className='input-enter rounded-0' placeholder='Chat with the folder...' value={userMessage} onChange={handleChange} />
+              <div onClick={(e) => { handleSubmitFolder(e) }} className="send-icon-container">
+                <Image alt='sendicon' width={20} height={20} className='icon-send' src={loading ? '/icons/spinner.gif':'/icons/send-icon.svg'} />
+              </div>
+          </form>
+          )}
       </div>
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
 

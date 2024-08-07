@@ -9,8 +9,9 @@ import { generatePresignedUrl } from "@/utils/common";
 import { Modal, Form, InputGroup } from "react-bootstrap";
 import Image from "next/image";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
+import useToggleSessionStorage from '@/hooks/sessionStorage';
 
-const OptionSection = ({ setIsLoading, isLoading }) => {
+const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
   const router = useRouter();
   const {
     setPdfList,
@@ -31,17 +32,18 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
   const [inputValue, setInputValue] = useState("");
   const [folder_id, setFolder_id] = useState("");
   const [draggingFile, setDraggingFile] = useState(null);
-  const [dragOverFolderId, setDragOverFolderId] = useState(null);
-  
+  const [dragOverFolderId, setDragOverFolderId] = useState(null);  
   // State to manage folder visibility
-  const [filteredFilesAndFolders, setFilteredFilesAndFolders] = useState([]);
+  const [folderKbName, setFolderKbName] = useState('');
+  const [activeFolderIndex, setActiveFolderIndex] = useState(-1);
+  const [sessionData, setSessionData] = useToggleSessionStorage('folderSelected', {});
 
   // Effect to filter files and folders based on search input
   useEffect(() => {
     if (typeof inputValue === "string") {
       if (inputValue === "") {
         // If search input is empty, display all files and folders
-        setFilteredFilesAndFolders(folders);
+        setFolders(folders);
       } else {
         // Filter files and folders based on search input
         const filtered = folders
@@ -60,7 +62,7 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
             return null;
           })
           .filter((folder) => folder !== null);
-        setFilteredFilesAndFolders(filtered);
+          setFolders(filtered);
       }
     }
   }, [inputValue, folders]);
@@ -68,6 +70,14 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
   // Handler for search input change
   const handleSearchInputChange = (e) => {
     setInputValue(e.target.value);
+  };
+
+  const handleClick = (index) => {
+    if (activeFolderIndex === index) {
+      setActiveFolderIndex(-1);
+    } else {
+      setActiveFolderIndex(index);
+    }
   };
 
   useEffect(() => {
@@ -82,6 +92,8 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
     const storedSelectedTab = sessionStorage.getItem("selectedTab");
     const storedSelectedPdf = sessionStorage.getItem("selectedPdf");
     const storedSourceId = sessionStorage.getItem("sourceId");
+    const storedFolderKbName = sessionStorage.getItem("folderKbName");
+    setFolderKbName(storedFolderKbName)
 
     // Update states if data is found in sessionStorage
     if (storedSelectedTab) {
@@ -95,11 +107,6 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    getMessages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTab]);
 
   const handleClose = () => {
     setShow(false);
@@ -138,88 +145,46 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
 
   };
 
-  const getMessages = async () => {
-    try {
-      const response = await allCommonApis(
-        `/Chat/get-file-chat/${selectedTab}`
-      );
-      if (response.status === 200) {
-        setChatMessage(response?.data?.data?.messages);
-      } else {
-        // Handle other cases where the status is not SUCCESS
-        console.error("Error fetching PDF list:", response.error);
-        setIsLoading(false);
-      }
-    } catch {
-      // Handle other cases where the status is not SUCCESS
-      toast.error("error fetching chats");
-      setIsLoading(false);
-    }
-  };
-  async function fetchPDFList() {
+  const fetchPDFList = async () => {
     const user = JSON.parse(localStorage?.getItem("User"));
     try {
-      const response = await allCommonApis(
-        `/Folder/get-all-folders/${user._id}`
-      );
+      const response = await allCommonApis(`/Folder/get-all-folders/${user._id}`);
       if (response.status === 200) {
-        // Set PDF list
-        setPdfList(response?.data?.data);
+        setPdfList(response.data.data);
         let selectedTabFromSession = sessionStorage.getItem("selectedTab");
         let selectedPdfFromSession = sessionStorage.getItem("selectedPdf");
         let sourceIdFromSession = sessionStorage.getItem("sourceId");
 
-        if (
-          selectedTabFromSession &&
-          selectedPdfFromSession &&
-          sourceIdFromSession
-        ) {
+        if (selectedTabFromSession && selectedPdfFromSession && sourceIdFromSession) {
           setSelectedTab(selectedTabFromSession);
           setSelectedPdf(selectedPdfFromSession);
           setSourceId(sourceIdFromSession);
-        } else if (response?.data?.data[0]?.files[0]) {
-          const url = await generatePresignedUrl(
-            response?.data?.data[0]?.files[0]?.fileUrl
-          );
-          setSelectedTab(response?.data?.data[0]?.files[0]?._id);
+        } else if (response.data.data[0]?.files[0]) {
+          const url = await generatePresignedUrl(response.data.data[0].files[0].fileUrl);
+          setSelectedTab(response.data.data[0].files[0]._id);
           setSelectedPdf(url);
-          setSourceId(response?.data?.data[0]?.files[0]?.sourceId);
-          sessionStorage.setItem(
-            "selectedTab",
-            response?.data?.data[0]?.files[0]?._id
-          );
+          setSourceId(response.data.data[0].files[0].sourceId);
+          sessionStorage.setItem("selectedTab", response.data.data[0].files[0]._id);
           sessionStorage.setItem("selectedPdf", url);
-          sessionStorage.setItem(
-            "sourceId",
-            response?.data?.data[0]?.files[0]?.sourceId
-          );
+          sessionStorage.setItem("sourceId", response.data.data[0].files[0].sourceId);
         }
 
-        // Modify data and set folders
-        const modifiedData = response?.data?.data?.map((item) => {
+        const modifiedData = response.data.data.map((item) => {
           return {
-            folder:
-              item.folder.name === "___default___"
-                ? { ...item.folder, name: "Default" }
-                : item.folder,
+            folder: item.folder.name === "___default___" ? { ...item.folder, name: "Default" } : item.folder,
             files: item.files,
-            isOpen: folder_id
-              ? item.folder._id === folder_id
-              : item.folder.name === "___default___", // Set isOpen based on folderId
+            isOpen: false,
           };
         });
 
-        // Reorder the folders so that "Default" comes first
         const sortedFolders = modifiedData.sort((a, b) => {
           if (a.folder.name === "Default") return -1;
           if (b.folder.name === "Default") return 1;
           return 0;
         });
 
-        // Set the folders
         setFolders(sortedFolders);
       } else {
-        // Handle other cases where the status is not SUCCESS
         console.error("Error fetching PDF list:", response.error);
         setIsLoading(false);
       }
@@ -227,11 +192,12 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
       console.error("Error fetching PDF list:", error);
       setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     fetchPDFList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   const toggleFolder = (index) => {
@@ -239,8 +205,22 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
       ...folder,
       isOpen: i === index ? !folder.isOpen : false,
     }));
-    setFolders(updatedFolders);
+    setFolders(updatedFolders);   
   };
+
+  const handleSelectFolder = (index) => {
+    setActiveFolderIndex(index)
+    const folderKbName = folders[index]?.folder?.kb_Name;  
+    if (sessionStorage.getItem('folderKbName') === folderKbName) {
+      sessionStorage.removeItem('folderKbName');
+      setSessionData(false);
+      setActiveFolderIndex(null); // Optional: reset the active folder index
+    } else {
+      sessionStorage.setItem('folderKbName', folderKbName);
+      setSessionData(true);
+    }
+    onSendData(sessionData);
+  }
 
   useEffect(() => {
     if (selectedPdf) {
@@ -261,59 +241,6 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
     return `src_${timestamp}`;
   }
 
-  const sendMessage = (userMessages, sourceId) => {
-    setIsLoading(true);
-    const lastMessages = userMessages.slice(-10);
-    const message = {
-      sourceId: sourceId,
-      messages: lastMessages, // Passing user messages to the API call
-    };
-    chatPDF.sendChat(message, async (response) => {
-      if (response.status === "success") {
-        await handleChat(response?.data?.content, "assistant");
-
-        const newAssistantMessage = {
-          role: "assistant",
-          content: response?.data?.content,
-        };
-        const updatedMessages = [...userMessages, newAssistantMessage]; // Combine user and assistant messages
-        setChatMessage(updatedMessages); // Update state after API call success
-        setIsLoading(false);
-      } else {
-        console.log("error");
-        setIsLoading(false);
-      }
-    });
-  };
-  useEffect(() => {
-    console.log(selectedTab, "tab");
-  }, [selectedTab]);
-
-  const handleChat = async (message, role) => {
-    try {
-      const messageData = {
-        file_id: selectedTab,
-        content: message,
-        role: role,
-        userId: user._id,
-      };
-
-      const response = await allCommonApis(
-        `/Chat/add-chat`,
-        "post",
-        messageData
-      );
-      if (response.status === 200) {
-      } else {
-        // Handle other cases where the status is not SUCCESS
-        console.error("Error fetching PDF list:", response.error);
-        setIsLoading(false);
-      }
-    } catch {
-      console.error("Error fetching PDF list:", error);
-      setIsLoading(false);
-    }
-  };
   const uploadPDFByFile = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -383,6 +310,7 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
 
   const handleClickPdf = async (file) => {
     if (draggingFile) return; // Don't process click if dragging
+    onSendData(sessionData);
     try {
       const url = await generatePresignedUrl(file.fileUrl);
       setSelectedPdf(url);
@@ -392,6 +320,7 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
       sessionStorage.setItem("selectedTab", file?._id);
       sessionStorage.setItem("selectedPdf", url);
       sessionStorage.setItem("sourceId", file.sourceId);
+      sessionStorage.setItem("pdfFile", file.name);
       if (!chatMessage.length >= 1) {
         await handleSendMessage(file.sourceId);
       }
@@ -401,6 +330,7 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
       console.error("Error fetching or uploading PDF file:", error);
     }
   };
+
   const handleSendMessage = async (sourceId) => {
     const messages = [
       {
@@ -488,20 +418,20 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
 
         {/* Folders */}
         <div className="folder-container">
-          {filteredFilesAndFolders.length === 0 ? (
+          {folders.length === 0 ? (
             <div className="no-files-found">No PDFs found</div>
           ) : (
-            filteredFilesAndFolders.map((folder, index) => (
+            folders.map((folder, index) => (
               <DroppableFolder
                 key={index}
                 folder={folder.folder}
                 onDragOver={handleDragOverFolder}
                 onDragLeave={handleDragLeaveFolder}
               >
-                <div key={index} className="folder">
+                <div  key={index} className="folder">
                   {/* Folder icon, name, and delete button */}
-                  <div className="folder-info" onClick={() => toggleFolder(index)}>
-                    <div className="folder-icon">
+                  <div  className={`folder-info ${activeFolderIndex === index ? 'active' : ''}`} onClick={() => handleClick(index)} >
+                    <div className="folder-icon" onClick={() => handleSelectFolder(index)}>
                       <Image
                         width={20}
                         height={20}
@@ -529,25 +459,34 @@ const OptionSection = ({ setIsLoading, isLoading }) => {
                       )} */}
 
                       <Image
+                          width={8}
+                          height={8}
+                          onClick={(e) => {
+                            handleOpen(e, folder.folder._id);
+                          }}
+                          className="add-icon-small mx-2"
+                          src="/icons/fi-rr-add.svg"
+                          alt="Add Icon"
+                      />
+                      <span>|</span>
+                      <Image
                         width={8}
                         height={8}
                         onClick={(e) => {
                           handleOpen(e, folder.folder._id);
                         }}
                         className="add-icon-small mx-2"
-                        src="/icons/fi-rr-add.svg"
+                        src="/icons/chat_1.svg"
                         alt="Add Icon"
                       />
                       <span>|</span>
-                      <Image
-                       width={8}
-                       height={8}
-                       onClick={(e) => {
-                         handleOpen(e, folder.folder._id);
-                       }}
-                       className="add-icon-small mx-2"
-                       src="/icons/chat_1.svg"
-                       alt="Add Icon"
+                      <Image 
+                        src='/icons/dropdown-arrow.svg'
+                        width={8}
+                        height={8}
+                        alt="Expand"
+                        className="add-icon-small mx-2"
+                        onClick={() => toggleFolder(index)}
                       />
                     </div>
                   </div>
