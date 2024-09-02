@@ -49,19 +49,20 @@ const Sidebar = () => {
     e.preventDefault();
 
      // Check if input value is empty
-  if (!inputValue.trim()) {
-    toast.error('Folder name cannot be empty');
-    return;
-  }
+    if (!inputValue.trim()) {
+      toast.error('Folder name cannot be empty');
+      return;
+    }
     try {
       const response = await allCommonApis(`/Folder/create-folder`, "post", {
         name: inputValue,
-        user_id: user?._id
+        user_id: user?._id,
+        kb_Name: inputValue
       });
       if (response.status === 200) {
         fetchPDFList();
       } else {
-        toast.error(response?.data?.data?.error || 'Error creating folder');
+        toast.error(response?.data?.error || 'Error creating folder 1');
         setIsLoading(false);
       }
     } catch (error) {
