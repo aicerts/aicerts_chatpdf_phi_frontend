@@ -47,7 +47,6 @@ const DisplayPdf = ({ url, scale, searchQuery }) => {
     useEffect(() => {
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
-        console.log(url,"url")
         return () => {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);

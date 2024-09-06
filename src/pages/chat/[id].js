@@ -10,9 +10,14 @@ const Chat = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const[isLoading, setIsLoading]=useState(false)
   const [childData, setChildData] = useState('');
+  const [selectedFolder, setSelectedFolder] = useState([]);
 
   const handleChildData = (data) => {
     setChildData(data);
+  };
+
+  const handleSelectFolder = (newFolder) => {
+    setSelectedFolder(newFolder);
   };
 
   return (
@@ -21,7 +26,7 @@ const Chat = () => {
         <Sidebar  />
       </div>
       <div className={`section second-section ${isCollapsed ? 'collapse' : ''}`}>
-        <OptionSection setIsLoading={setIsLoading} isLoading={isLoading} onSendData={handleChildData} />
+        <OptionSection setIsLoading={setIsLoading} isLoading={isLoading} onSendData={handleChildData} onSelectFolder={handleSelectFolder} />
       </div>
       <div className={`section third-section ${isCollapsed ? 'full-width' : ''}`}>
         <MainSection 
@@ -30,6 +35,7 @@ const Chat = () => {
           setIsCollapsed={setIsCollapsed} 
           isCollapsed={isCollapsed} 
           childData={childData}
+          selectedFolder={selectedFolder}
         />
       </div>
     </div>

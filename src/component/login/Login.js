@@ -70,7 +70,7 @@ const LoginComponent = () => {
                 email: username,
                 password,
             })
-            console.log(response,"res")
+            // console.log(response,"res")
             if (response.status=="200") {
                 router.push('/');
             } else {

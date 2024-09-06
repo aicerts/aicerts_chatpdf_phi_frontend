@@ -1,12 +1,12 @@
-import React, { useContext, useState } from "react";
-import PDFList from "../pdfs/PDFList";
+import React, { useContext, useEffect, useState } from "react";
 import DisplayPdf from "../pdfs/displayPdf";
 import DataContext from "@/utils/DataContext";
 import Image from "next/image";
 import { Form, InputGroup } from 'react-bootstrap';
+import { generatePresignedUrl } from "@/utils/common";
 
-const Showpdf = () => {
-  const { selectedPdf } = useContext(DataContext);
+const Showpdf = ({selectedFolder, childData}) => {
+  const { selectedPdf, setSelectedPdf } = useContext(DataContext);
   const [scale, setScale] = useState(0.7);
   const [query, setQuery] = useState("");
 
@@ -23,9 +23,15 @@ const Showpdf = () => {
   };
 
   const handleSearch = (event) => {
-    console.log("Search");
+    // console.log("Search");
     setQuery(event.target.value);
   };
+
+  const handleSelectFile = async (fileUrl) => {
+    const url = await generatePresignedUrl(fileUrl);
+    setSelectedPdf(url);
+  }
+
   return (
     <div>
       <div className="search-container">
@@ -81,46 +87,23 @@ const Showpdf = () => {
           />
         </div>
       </div>
+      {childData ? (
+        <div className="display-file-list">
+          <Form.Select onChange={(e) => handleSelectFile(e.target.value)}>
+            <option><strong>Selected folder: {selectedFolder?.folder?.name}</strong></option>
+            {selectedFolder && selectedFolder.files && selectedFolder.files.map((file, index) => (
+              <option key={index} value={file?.fileUrl}>{file?.name}</option>
+            ))}
+          </Form.Select>
+      </div>
+      ) : (
+        <></>
+      )}
       <div className="pdf-container">
         {selectedPdf && (
           <DisplayPdf scale={scale} url={selectedPdf} searchQuery={query} />
         )}
       </div>
-      {/* <nav id="raiseup">
-        <ul>
-          <li>
-            <a href="#">Direct link 1</a>
-          </li>
-          <li>
-            <a href="#">Direct link 2</a>
-          </li>
-          <li>
-            <p>Menu with sub menu</p>
-            <ul>
-              <li>
-                <a href="#">Sub-entry 1</a>
-              </li>
-              <li>
-                <p>Sub-entry 2 with submenu</p>
-                <ul>
-                  <li>
-                    <a href="#">3rd level link 1</a>
-                  </li>
-                  <li>
-                    <a href="#">3rd level link 2</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Sub-entry 3</a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">Direct link 3</a>
-          </li>
-        </ul>
-      </nav> */}
     </div>
   );
 };

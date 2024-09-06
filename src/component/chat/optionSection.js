@@ -11,7 +11,7 @@ import Image from "next/image";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import useToggleSessionStorage from '@/hooks/sessionStorage';
 
-const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
+const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder }) => {
   const router = useRouter();
   const {
     setPdfList,
@@ -35,8 +35,10 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
   const [dragOverFolderId, setDragOverFolderId] = useState(null);  
   // State to manage folder visibility
   const [folderKbName, setFolderKbName] = useState('');
-  const [activeFolderIndex, setActiveFolderIndex] = useState(-1);
   const [sessionData, setSessionData] = useToggleSessionStorage('folderSelected', {});
+  const [activeFolderIndex, setActiveFolderIndex] = useState(null);
+  const [isChecked, setIsChecked] = useState(new Array(folders.length).fill(false));
+  // const [selectedFolder, setSelectedFolder] = useState(null);
 
   // Effect to filter files and folders based on search input
   useEffect(() => {
@@ -208,19 +210,55 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
     setFolders(updatedFolders);   
   };
 
+  // const handleSelectFolder = (index) => {
+  //   setActiveFolderIndex(index)
+  //   const selectedFolder = folders[index];
+  //   const folderKbName = folders[index]?.folder?.kb_Name;  
+  //   if (sessionStorage.getItem('folderKbName') === folderKbName) {
+  //     sessionStorage.removeItem('folderKbName');
+  //     sessionStorage.removeItem('selectedFolder');
+  //     setSessionData(false);
+  //     setIsChecked(false)
+  //     setActiveFolderIndex(null);
+  //   } else {
+  //     sessionStorage.setItem('folderKbName', folderKbName);
+  //     onSelectFolder(selectedFolder)
+  //     setSessionData(true);
+  //     setActiveFolderIndex(index)
+  //     setIsChecked(true)
+  //   }
+  //   onSendData(sessionData);
+  //   setIsChecked(sessionData)
+  // }
+
   const handleSelectFolder = (index) => {
-    setActiveFolderIndex(index)
-    const folderKbName = folders[index]?.folder?.kb_Name;  
-    if (sessionStorage.getItem('folderKbName') === folderKbName) {
-      sessionStorage.removeItem('folderKbName');
-      setSessionData(false);
-      setActiveFolderIndex(null); // Optional: reset the active folder index
-    } else {
+    const newIsChecked = new Array(folders.length).fill(false);
+    newIsChecked[index] = !newIsChecked[index];
+    setIsChecked(newIsChecked);
+    setActiveFolderIndex(newIsChecked[index] ? index : null);
+
+    const selectedFolder = folders[index];
+    const folderKbName = folders[index]?.folder?.kb_Name;
+
+    if (newIsChecked[index]) {
       sessionStorage.setItem('folderKbName', folderKbName);
-      setSessionData(true);
+      onSelectFolder(selectedFolder);
+    } else {
+      sessionStorage.removeItem('folderKbName');
+      sessionStorage.removeItem('selectedFolder');
     }
-    onSendData(sessionData);
+
+    // Check if any folder is selected
+    const anyFolderSelected = newIsChecked.some((checked) => checked);
+    onSendData(anyFolderSelected);
+  };
+
+
+  const handleCheckChange = (index) => {
+    // setIsChecked(!isChecked);
+    handleSelectFolder(index);
   }
+  
 
   useEffect(() => {
     if (selectedPdf) {
@@ -321,10 +359,10 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
       sessionStorage.setItem("selectedPdf", url);
       sessionStorage.setItem("sourceId", file.sourceId);
       sessionStorage.setItem("pdfFile", file.name);
+      setIsChecked(false)
       if (!chatMessage.length >= 1) {
         await handleSendMessage(file.sourceId);
       }
-      // setSelectedPdf(blob);
     } catch (error) {
       // toast.error("unable to fetch pdf data")
       console.error("Error fetching or uploading PDF file:", error);
@@ -369,23 +407,24 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
   };
 
   const handleDeleteFolder = async (folder) => {
+    setIsLoading(true);
     try {
-      console.log(folder)
-      // const response = await allCommonApis(
-      //   `/Folder/delete-Folder/${folder_id}`,
-      //   "delete"
-      // );
+      const folderId = folder.folder._id;
+      console.log('Deleting folder:', folder);
+      const response = await allCommonApis(
+        `/Folder/delete-Folder/${folderId}`,
+        "delete"
+      );
       if (response.status === 200) {
         fetchPDFList();
-        toast.success("Folder deleted Successfully");
+        toast.success("Folder deleted successfully");
       } else {
-        // Handle other cases where the status is not SUCCESS
-        toast.error("Error deleting Folder");
-        setIsLoading(false);
+        toast.error("Error deleting folder");
       }
-    } catch {
-      // Handle other cases where the status is not SUCCESS
-      toast.error("Error deleting Folder");
+    } catch (error) {
+      console.error("Error deleting folder:", error);
+      toast.error("Error deleting folder");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -430,7 +469,12 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
               >
                 <div  key={index} className="folder">
                   {/* Folder icon, name, and delete button */}
-                  <div  className={`folder-info ${activeFolderIndex === index ? 'active' : ''}`} onClick={() => handleClick(index)} >
+                  <div className={`folder-info ${isChecked[index] ? 'active' : ''}`} onClick={() => handleClick(index)} >
+                  <Form.Check
+                    type='checkbox'
+                    checked={isChecked[index]}
+                    onChange={() => handleCheckChange(index)}
+                  />
                     <div className="folder-icon" onClick={() => handleSelectFolder(index)}>
                       <Image
                         width={20}
@@ -443,21 +487,7 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
                         <span className="folder-name">{folder?.folder?.name}</span>
                       </div>
                     </div>
-
-                    {/* Delete folder icon */}
-                    {/* Conditionally render delete folder icon */}
                     <div className="folder-right">
-                      {/* {folder.folder.name !== "Default" && (
-                        <Image
-                          width={20}
-                          height={20}
-                          className="icons"
-                          src="/icons/delete.svg"
-                          alt="Delete Folder"
-                          onClick={() => handleDeleteFolder(folder)}
-                        />
-                      )} */}
-
                       <Image
                           width={8}
                           height={8}
@@ -469,7 +499,7 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
                           alt="Add Icon"
                       />
                       <span>|</span>
-                      <Image
+                      {/* <Image
                         width={8}
                         height={8}
                         onClick={(e) => {
@@ -478,16 +508,29 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
                         className="add-icon-small mx-2"
                         src="/icons/chat_1.svg"
                         alt="Add Icon"
-                      />
+                      /> */}
+                        {!isChecked[index] && folder.folder.name !== "Default" ? (
+                          <Image
+                            width={20}
+                            height={20}
+                            className='icons'
+                            src="/icons/delete1.svg"
+                            alt="Delete Folder"
+                            onClick={() => handleDeleteFolder(folder)}
+                          />
+                        ): (
+                          <div style={{ width: '20px', height: '20px' }}></div>
+                          )
+                        }
                       <span>|</span>
-                      <Image 
-                        src='/icons/dropdown-arrow.svg'
-                        width={8}
-                        height={8}
-                        alt="Expand"
-                        className="add-icon-small mx-2"
-                        onClick={() => toggleFolder(index)}
-                      />
+                        <Image 
+                          src='/icons/dropdown-arrow.svg'
+                          width={8}
+                          height={8}
+                          alt="Expand"
+                          className="add-icon-small mx-2"
+                          onClick={() => toggleFolder(index)}
+                       />                     
                     </div>
                   </div>
 
@@ -506,34 +549,36 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, folderData}) => {
                             }}
                             className="file file-color-golden"
                           >
-                            <Image
-                              width={16}
-                              height={16}
-                              className="file-small-img"
-                              src={
-                                selectedTab == file._id
-                                  ? "/icons/file-small.svg"
-                                  : "/icons/file-small-gray.svg"
-                              }
-                              alt="File Icon"
-                            />
-                            <span
-                              className="file-name"
-                              style={{
-                                color: selectedTab == file._id ? "#FFFFFF" : "#000000",
+                            <div className="file_name_container">
+                              <Image
+                                width={16}
+                                height={16}
+                                className="file-small-img"
+                                src={
+                                  selectedTab == file._id
+                                    ? "/icons/file-small.svg"
+                                    : "/icons/file-small-gray.svg"
+                                }
+                                alt="File Icon"
+                              />
+                              <span
+                                className="file-name"
+                                style={{
+                                  color: selectedTab == file._id ? "#FFFFFF" : "#000000",
+                                }}
+                              >
+                                {file.name}
+                              </span>
+                            </div>
+                            <Image width={20} height={20}
+                              className={`icons ${selectedTab == file._id ? 'd-none' : ''}`}
+                              src='/icons/delete1.svg'
+                              alt='Delete File'
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent event bubbling to the folder toggle
+                                handleDeleteFile(file._id);
                               }}
-                            >
-                              {file.name}
-                            </span>
-                            {/* <Image width={20} height={20}
-                        className='icons'
-                        src='/icons/delete.svg'
-                        alt='Delete File'
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent event bubbling to the folder toggle
-                          handleDeleteFile(file._id);
-                        }}
-                      /> */}
+                            />
                           </div>
                         </DraggableFile>
                         ))

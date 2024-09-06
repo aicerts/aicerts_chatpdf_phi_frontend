@@ -156,7 +156,7 @@
         .chat-header {
           width: calc(100% - 20px);
           height: 37px;
-          padding: 10px;
+          padding: 10px 0;
           border-radius: 10px;
         }
       }
@@ -183,6 +183,17 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        .chat-icon {
+          column-gap: 20px;
+
+          .icon-container {
+            width: 50px;
+            height: 50px;
+            background: #1C1F30;
+            padding: 15px;
+          }
+        }
 
         p {
           margin: 0;
@@ -417,6 +428,7 @@
     display: flex;
     align-items: flex-end;
     margin-bottom: 10px;
+    width: 97%;
   }
 
   .search-input-pdf {
@@ -437,6 +449,10 @@
       transform: translateY(1px); // Example: moves the icon down slightly on click
     }
 
+  }
+
+  .display-file-list {
+    width: 97%;
   }
 
   .reload-icon {
@@ -513,13 +529,23 @@
     } 
 
     .folder-container {
-      /* Styles for the container of folders */
-
       width: 90%;
       overflow-y: auto;
       overflow-x: hidden;
       scrollbar-width: thin;
       scrollbar-gutter: stable;
+
+      div {
+        &:first-child {
+         .folder {
+          .folder-info  {
+            .folder-right {
+              
+            }
+          }
+         }
+        }
+      }
     }
 
     .folder {
@@ -579,8 +605,9 @@
         text-overflow: ellipsis;
         max-width: calc(100% - 30px);
         width: 200px;
-        margin-right: 5px;
+        margin: 0 5px 0 10px;
         display: flex;
+        align-items: center;
       }
 
       .folder-icon-small {
@@ -625,29 +652,33 @@
         align-items: center;
         padding: 16px;
         margin-bottom: 20px;
-        width: 90%;
-
+        width: 96%;
         height: 40px;
         // border-radius: 10px;
         text-align: center;
         overflow: hidden;
         white-space: nowrap;
+        justify-content: space-between;
 
-        .file-name {
-          color: #000;
-          font-family: $Montserrat;
-          font-size: 16px;
-          font-style: normal;
-          font-weight: 500;
-          line-height: normal;
+        .file_name_container {
+          width: 88%;
           overflow: hidden;
           text-overflow: ellipsis;
           max-width: calc(100% - 30px);
-          /* Adjust the value according to your needs */
-        }
+          text-align: left;
 
-        .file-small-img {
-          margin-right: 10px;
+          .file-name {
+            color: #000;
+            font-family: $Montserrat;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+          }
+
+          .file-small-img {
+            margin-right: 10px;
+          }
         }
 
         .drag-handle {
