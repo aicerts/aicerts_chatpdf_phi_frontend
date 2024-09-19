@@ -9,8 +9,9 @@ const Chat = () => {
   const { id } = router.query;
   const [isCollapsed, setIsCollapsed] = useState(false);
   const[isLoading, setIsLoading]=useState(false)
-  const [childData, setChildData] = useState('');
+  const [childData, setChildData] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState([]);
+  const [pdfName, setPdfName] = useState(null);
 
   const handleChildData = (data) => {
     setChildData(data);
@@ -20,13 +21,17 @@ const Chat = () => {
     setSelectedFolder(newFolder);
   };
 
+  const handlePdfName = (newName) => {
+    setPdfName(newName)
+  }
+
   return (
     <div className='chat-container'>
       <div className={`section first-section`}>
         <Sidebar  />
       </div>
       <div className={`section second-section ${isCollapsed ? 'collapse' : ''}`}>
-        <OptionSection setIsLoading={setIsLoading} isLoading={isLoading} onSendData={handleChildData} onSelectFolder={handleSelectFolder} />
+        <OptionSection setIsLoading={setIsLoading} isLoading={isLoading} onSendData={handleChildData} onSelectFolder={handleSelectFolder} sendSelectedPdf={handlePdfName} />
       </div>
       <div className={`section third-section ${isCollapsed ? 'full-width' : ''}`}>
         <MainSection 
@@ -36,6 +41,7 @@ const Chat = () => {
           isCollapsed={isCollapsed} 
           childData={childData}
           selectedFolder={selectedFolder}
+          pdfName={pdfName} 
         />
       </div>
     </div>

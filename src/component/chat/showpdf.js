@@ -89,7 +89,7 @@ const Showpdf = ({selectedFolder, childData}) => {
       </div>
       {childData ? (
         <div className="display-file-list">
-          <Form.Select onChange={(e) => handleSelectFile(e.target.value)}>
+          <Form.Select className="rounded-0" onChange={(e) => handleSelectFile(e.target.value)}>
             <option><strong>Selected folder: {selectedFolder?.folder?.name}</strong></option>
             {selectedFolder && selectedFolder.files && selectedFolder.files.map((file, index) => (
               <option key={index} value={file?.fileUrl}>{file?.name}</option>

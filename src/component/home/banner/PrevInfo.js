@@ -78,7 +78,7 @@ const PrevInfoComponent = () => {
                     </Container>
                 )
             ) : (
-                <p>Please login to see your chat history</p>
+                <></>
             )}
             {!isLoggedIn && (
                 <div className='signin text-center'>

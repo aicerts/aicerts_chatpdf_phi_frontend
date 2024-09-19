@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { formatChatResponse } from '@/utils/common';
 
-const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => {
+const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder, pdfName }) => {
   const { pdfData, setPdfData, sourceId, chatMessage, setChatMessage, selectedTab, setSourceId, setSelectedTab, setSelectedPdf } = useContext(DataContext);
   const [message, setMessage] = useState(false)
   const [userMessage, setUserMessage] = useState("")
@@ -102,12 +102,10 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
       toast.error("Empty Message sent")
     }
   };
-
   const getMessages = (async () => {
     try {
       const response = await allCommonApis(`/Chat/get-file-chat/${selectedTab}`);
       if (response.status === 200) {
-
         setChatMessage(response?.data?.data?.messages)
       } else {
         // Handle other cases where the status is not SUCCESS
@@ -117,13 +115,12 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
       }
     } catch {
       // Handle other cases where the status is not SUCCESS
-      toast.error("error fetching chats")
+      // toast.error("error fetching chats")
       setIsLoading(false);
     }
   })
 
   useEffect(() => {
-
     getMessages()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTab])
@@ -215,6 +212,8 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
     }
   })
 
+  const [folderChat, setFolderChat] = useState([]);
+
   const sendMessageFolder = async (userMessages) => {
     const trimmedMessages = userMessages.map(message => message.content.trim()); // Trim leading/trailing spaces
     const lastMessages = trimmedMessages.slice(-1)[0];
@@ -225,6 +224,7 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
       };
       chatPDF.sendChat(message, async (response) => {
         if (response.status === "success") {
+          console.log("Response: ", response.data)
           setMessage(response.data);
           const newAssistantMessage = {
             role: "assistant",
@@ -232,7 +232,7 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
           };
           await handleChatFolder(response.data.content, "assistant")
           const updatedMessages = [...userMessages, newAssistantMessage]; // Combine user and assistant messages
-          setChatMessage(updatedMessages); // Update state after API call success
+          setFolderChat(updatedMessages); // Update state after API call success
           setLoading(false);
         } else {
           console.log("error");
@@ -245,6 +245,7 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
   };
 
   const handleSubmitFolder = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const trimmedMessage = userMessage.trim();
     if (trimmedMessage) {
@@ -301,12 +302,11 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
     document.body.removeChild(link);
   };
 
-
-
-  // const deleteChat = () => {
-  //   // Clear chat messages
-  //   setChatMessage([]);
-  // };
+  const deleteChat = () => {
+    // Clear chat messages
+    setChatMessage([]);
+    setFolderChat([])
+  };
 
 
   // useEffect(async()=>{
@@ -325,7 +325,7 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
     <div style={{ height: "100%" }}>
       <div className='chat-header'>
         <div className='chat-icon d-flex align-items-center'>
-          {getFileName && childData === false ? (
+          {pdfName && childData === false ? (
             <>
               <div className='icon-container'>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -333,13 +333,15 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
                     <path d="M13.5156 4.68744H17.2739L12.9297 0.343262V4.1015C12.9297 4.42479 13.1923 4.68744 13.5156 4.68744Z" fill="white"/>
                   </svg>
               </div>
-              {getFileName ? getFileName+'.pdf' : 'No file selected'}
+              {pdfName ? pdfName+'.pdf' : 'No file selected'}
             </>
           ):(
               <>
                 <div className='icon-container'>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" fill="none">
-                    <path d="M10 0.166664C10 1.08333 9.25417 1.83333 8.33333 1.83333H4.16667H1.66667C0.746167 1.83333 0 2.58333 0 3.5V10.1667V12.6667C0 13.5833 0.746192 14.3333 1.66667 14.3333H18.3333C19.2542 14.3333 20 13.5833 20 12.6667V10.1667V1.83333C20 0.916664 19.2542 0.166664 18.3333 0.166664H10Z" fill="white"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 5C10 5.91667 9.25417 6.66667 8.33333 6.66667H4.16667H1.66667C0.746167 6.66667 0 7.41667 0 8.33333V15V17.5C0 18.4167 0.746192 19.1667 1.66667 19.1667H18.3333C19.2542 19.1667 20 18.4167 20 17.5V15V6.66667C20 5.75 19.2542 5 18.3333 5H10Z" fill="#D7D7D7"/>
+                    <path d="M1.66667 1.66666C0.746167 1.66666 0 2.41283 0 3.33333V7.5H8.33333V8.33333H20V4.16666C20 3.24616 19.2542 2.5 18.3333 2.5H9.76583C9.4775 2.00258 8.95 1.66666 8.33333 1.66666H1.66667Z" fill="#D7D7D7"/>
+                    <path d="M10 4.16666C10 5.08333 9.25417 5.83333 8.33333 5.83333H4.16667H1.66667C0.746167 5.83333 0 6.58333 0 7.5V14.1667V16.6667C0 17.5833 0.746192 18.3333 1.66667 18.3333H18.3333C19.2542 18.3333 20 17.5833 20 16.6667V14.1667V5.83333C20 4.91666 19.2542 4.16666 18.3333 4.16666H10Z" fill="white"/>
                   </svg>
                 </div>
                 <p>{selectedFolder?.folder?.name ? selectedFolder?.folder?.name : 'No Folder selected'}</p>
@@ -367,40 +369,69 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
             </div>
             :
             <div className="chat-container-inner">
-              {chatMessage.length > 1 ? (
-                chatMessage.map((message, index) => (
-                  // Check if message content and role match the condition
-                  (message.content !== "what questions can I ask in this PDF?" || message.role !== "user") && (
-                    <div
-                      key={index}
-                      className={`message ${message.role === 'user' ? 'user-message' : 'admin-message'}`}
-                    >
-                      {message.role === 'assistant' && (
-                        <Image
-                          width={10}
-                          height={10}
-                          src='/icons/copied-icon.svg'
-                          alt='Copy Icon'
-                          className='copy-icon'
-                          onClick={() => handleCopyToClipboard(message.content)}
-                        />
-                      )}
-                      <div
-                        key={index}
-                        className={`message ${message.role === 'user' ? 'user-message' : 'admin-message'}`}
-                        dangerouslySetInnerHTML={{ __html: formatChatResponse(message) }} // Render HTML content
-                      />
+              {childData === true ? (
+                  folderChat.length > 1 ? (
+                    folderChat.map((message, index) => (
+                        // Filter out specific message content and role
+                        (message.content !== "what questions can I ask in this PDF?" || message.role !== "user") && (
+                            <div
+                                key={index}
+                                className={`message ${message.role === 'user' ? 'user-message' : 'admin-message'}`}
+                            >
+                                {message.role === 'assistant' && (
+                                    <Image
+                                        width={10}
+                                        height={10}
+                                        src='/icons/copied-icon.svg'
+                                        alt='Copy Icon'
+                                        className='copy-icon'
+                                        onClick={() => handleCopyToClipboard(message.content)} // Handle copy action
+                                    />
+                                )}
+                                <div
+                                    className={`message ${message.role === 'user' ? 'user-message' : 'admin-message'}`}
+                                    dangerouslySetInnerHTML={{ __html: formatChatResponse(message) }} // Safely render HTML content
+                                />
+                            </div>
+                        )
+                    ))
+                ) : (
+                    <div className="message admin-message">
+                        Hello! How can I assist you? {/* Default message when there is only 1 or no message */}
                     </div>
-                  )
-                ))
+                )
               ) : (
-                <div
-                  className={`message admin-message`}
-                >
-                  Hello! How can I assist you?
-                </div>
+                  chatMessage.length > 1 ? (
+                      chatMessage.map((message, index) => (
+                          // Filter out specific message content and role
+                          (message.content !== "what questions can I ask in this PDF?" || message.role !== "user") && (
+                              <div
+                                  key={index}
+                                  className={`message ${message.role === 'user' ? 'user-message' : 'admin-message'}`}
+                              >
+                                  {message.role === 'assistant' && (
+                                      <Image
+                                          width={10}
+                                          height={10}
+                                          src='/icons/copied-icon.svg'
+                                          alt='Copy Icon'
+                                          className='copy-icon'
+                                          onClick={() => handleCopyToClipboard(message.content)} // Handle copy action
+                                      />
+                                  )}
+                                  <div
+                                      className={`message ${message.role === 'user' ? 'user-message' : 'admin-message'}`}
+                                      dangerouslySetInnerHTML={{ __html: formatChatResponse(message) }} // Safely render HTML content
+                                  />
+                              </div>
+                          )
+                      ))
+                  ) : (
+                      <div className="message admin-message">
+                          Hello! How can I assist you? {/* Default message when there is only 1 or no message */}
+                      </div>
+                  )
               )}
-
               <div ref={messagesEndRef} />
             </div>
         }
@@ -408,9 +439,9 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
         {childData === false ? 
           (
             <form onClick={(e) => { handleSubmit(e) }} className='input-container'>
-              {/* <button className='delete-btn'>
+              <button className='delete-btn' onClick={deleteChat}>
                 <Image alt='delete' width={20} height={20} className='icon-delete' src="/icons/delete1.svg"/>
-              </button> */}
+              </button>
               <input disabled={loading} className='input-enter rounded-0' placeholder={`Ask to file ${getFileName}`} value={userMessage} onChange={handleChange} />
               <div onClick={(e) => { handleSubmit(e) }} className="send-icon-container">
                 <Image alt='sendicon' width={20} height={20} className='icon-send' src={loading ? '/icons/spinner.gif':'/icons/send-icon.svg'} />
@@ -418,7 +449,7 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
             </form>
           ) : (            
             <form onClick={(e) => { handleSubmitFolder(e) }} className='input-container'>
-              <button className='delete-btn'>
+              <button className='delete-btn' onClick={deleteChat}>
                 <Image alt='delete' width={20} height={20} className='icon-delete' src="/icons/delete1.svg"/>
               </button>
               <input disabled={loading} className='input-enter rounded-0' placeholder={`Chat with the folder: ${selectedFolder?.folder?.name}`} value={userMessage} onChange={handleChange} />
@@ -429,20 +460,15 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
           )}
       </div>
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-
         <div style={{ display: "flex", justifyContent: "flex-end", margin: "10px", cursor: "pointer", color: "gray", }}>
           <Image
-
             height={13}
             width={13}
             onClick={handleClose}
             src='/icons/cross.svg'
             alt='close'
           />
-
         </div>
-
-
         <Modal.Body className='p-5'>
           <p>Copy the link below</p>
           <InputGroup className="mb-3">
@@ -463,13 +489,9 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder }) => 
                 />
               }
             </div>
-
           </InputGroup>
-
         </Modal.Body>
       </Modal>
-
-
     </div>
   )
 }

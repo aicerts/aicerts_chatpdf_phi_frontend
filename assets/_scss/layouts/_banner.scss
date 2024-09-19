@@ -5,6 +5,25 @@
     font-family: $font-family;
     padding: 80px 0 0;
 
+    .signin {
+        color: #FFF;
+        text-align: right;
+        font-family: $Poppins;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+
+        a {
+            color: $golden;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
     .banner-content {
         .title {
             color: $white;
@@ -30,17 +49,11 @@
         border: 2px dashed #F3F4F6;
         padding: 10px;
         margin-top: $margin-top-40;
-        border-radius:10px;
-        -webkit-border-radius:10px;
-        -moz-border-radius:10px;
-        -ms-border-radius:10px;
-        -o-border-radius:10px;
         cursor: pointer;
         
         .upload-file {
             text-align: center;
             padding: 58px 0;
-            border-radius: 10px;
             background: linear-gradient(90deg, #F3F4F6 0%, #F3F4F6 100%);
             backdrop-filter: blur(2px);
 
@@ -92,6 +105,26 @@
                 line-height: normal;
             }
         }
+    }
+
+    //1600 screens
+    @media (min-width: $large-min) and (max-width: $large-max) {
+        background-position-y: -18em;
+    }
+
+    //1440 screens
+    @media (min-width: $medium-min) and (max-width: $medium-max) {
+        background-position-y: -16em;
+    }
+
+    //1366 screens
+    @media (min-width: $small-min) and (max-width: $small-max) {
+        background-position-y: -14em;
+    }
+
+    //1280 screens
+    @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+        background-position-y: -12em;
     }
 }
 
