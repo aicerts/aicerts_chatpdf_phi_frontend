@@ -11,7 +11,7 @@ import Image from "next/image";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import useToggleSessionStorage from '@/hooks/sessionStorage';
 
-const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder }) => {
+const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder, sendSelectedPdf }) => {
   const router = useRouter();
   const {
     setPdfList,
@@ -38,7 +38,7 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder }) 
   const [sessionData, setSessionData] = useToggleSessionStorage('folderSelected', {});
   const [activeFolderIndex, setActiveFolderIndex] = useState(null);
   const [isChecked, setIsChecked] = useState(new Array(folders.length).fill(false));
-  // const [selectedFolder, setSelectedFolder] = useState(null);
+  const [selectedFolderIndex, setSelectedFolderIndex] = useState(null);
 
   // Effect to filter files and folders based on search input
   useEffect(() => {
@@ -210,56 +210,31 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder }) 
     setFolders(updatedFolders);   
   };
 
-  // const handleSelectFolder = (index) => {
-  //   setActiveFolderIndex(index)
-  //   const selectedFolder = folders[index];
-  //   const folderKbName = folders[index]?.folder?.kb_Name;  
-  //   if (sessionStorage.getItem('folderKbName') === folderKbName) {
-  //     sessionStorage.removeItem('folderKbName');
-  //     sessionStorage.removeItem('selectedFolder');
-  //     setSessionData(false);
-  //     setIsChecked(false)
-  //     setActiveFolderIndex(null);
-  //   } else {
-  //     sessionStorage.setItem('folderKbName', folderKbName);
-  //     onSelectFolder(selectedFolder)
-  //     setSessionData(true);
-  //     setActiveFolderIndex(index)
-  //     setIsChecked(true)
-  //   }
-  //   onSendData(sessionData);
-  //   setIsChecked(sessionData)
-  // }
-
   const handleSelectFolder = (index) => {
-    const newIsChecked = new Array(folders.length).fill(false);
-    newIsChecked[index] = !newIsChecked[index];
-    setIsChecked(newIsChecked);
-    setActiveFolderIndex(newIsChecked[index] ? index : null);
-
-    const selectedFolder = folders[index];
-    const folderKbName = folders[index]?.folder?.kb_Name;
-
-    if (newIsChecked[index]) {
-      sessionStorage.setItem('folderKbName', folderKbName);
-      onSelectFolder(selectedFolder);
+    if (selectedFolderIndex === index) {
+        // If the same folder is clicked again, uncheck it
+        setSelectedFolderIndex(null);
+        sessionStorage.removeItem('folderKbName');
+        sessionStorage.removeItem('selectedFolder');
+        onSendData(false); // No folder is selected, so set onSendData to false
     } else {
-      sessionStorage.removeItem('folderKbName');
-      sessionStorage.removeItem('selectedFolder');
+        // Select the new folder and uncheck the previous one
+        setSelectedFolderIndex(index);
+        setActiveFolderIndex(index ? index : null);
+        const selectedFolder = folders[index];
+        const folderKbName = index ? index : null;
+        // Store the selected folder details in session storage
+        sessionStorage.setItem('folderKbName', folderKbName);
+        onSelectFolder(selectedFolder); // Call onSelectFolder function with the selected folder
+        onSendData(true); // A folder is selected, so set onSendData to true
     }
-
-    // Check if any folder is selected
-    const anyFolderSelected = newIsChecked.some((checked) => checked);
-    onSendData(anyFolderSelected);
   };
 
-
   const handleCheckChange = (index) => {
-    // setIsChecked(!isChecked);
+    setIsChecked(!isChecked);
     handleSelectFolder(index);
   }
   
-
   useEffect(() => {
     if (selectedPdf) {
       // setSelectedTab(pdfFile?.name)
@@ -348,7 +323,8 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder }) 
 
   const handleClickPdf = async (file) => {
     if (draggingFile) return; // Don't process click if dragging
-    onSendData(sessionData);
+    onSendData(false);
+    setSelectedFolderIndex(null);
     try {
       const url = await generatePresignedUrl(file.fileUrl);
       setSelectedPdf(url);
@@ -359,6 +335,7 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder }) 
       sessionStorage.setItem("selectedPdf", url);
       sessionStorage.setItem("sourceId", file.sourceId);
       sessionStorage.setItem("pdfFile", file.name);
+      sendSelectedPdf(file.name)
       setIsChecked(false)
       if (!chatMessage.length >= 1) {
         await handleSendMessage(file.sourceId);
@@ -469,10 +446,10 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder }) 
               >
                 <div  key={index} className="folder">
                   {/* Folder icon, name, and delete button */}
-                  <div className={`folder-info ${isChecked[index] ? 'active' : ''}`} onClick={() => handleClick(index)} >
+                  <div className={`folder-info ${selectedFolderIndex === index ? 'active' : ''}`} onClick={() => handleClick(index)} >
                   <Form.Check
                     type='checkbox'
-                    checked={isChecked[index]}
+                    checked={selectedFolderIndex === index}
                     onChange={() => handleCheckChange(index)}
                   />
                     <div className="folder-icon" onClick={() => handleSelectFolder(index)}>
@@ -488,28 +465,20 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder }) 
                       </div>
                     </div>
                     <div className="folder-right">
-                      <Image
+                      <div className="d-flex align-items-center" style={{ columnGap: '10px', background: '#FAFAFA', padding: '8px' }}>
+                        <Image
                           width={8}
-                          height={8}
-                          onClick={(e) => {
-                            handleOpen(e, folder.folder._id);
-                          }}
-                          className="add-icon-small mx-2"
-                          src="/icons/fi-rr-add.svg"
-                          alt="Add Icon"
-                      />
-                      <span>|</span>
-                      {/* <Image
-                        width={8}
-                        height={8}
-                        onClick={(e) => {
-                          handleOpen(e, folder.folder._id);
-                        }}
-                        className="add-icon-small mx-2"
-                        src="/icons/chat_1.svg"
-                        alt="Add Icon"
-                      /> */}
-                        {!isChecked[index] && folder.folder.name !== "Default" ? (
+                            height={8}
+                            onClick={(e) => {
+                              handleOpen(e, folder.folder._id);
+                            }}
+                            className="add-icon-small mx-2"
+                            src="/icons/fi-rr-add.svg"
+                            alt="Add Icon"
+                        />
+                        <span>|</span>
+                        {!selectedFolderIndex === index && folder.folder.name !== "Default" ? (
+                          <>
                           <Image
                             width={20}
                             height={20}
@@ -518,19 +487,21 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder }) 
                             alt="Delete Folder"
                             onClick={() => handleDeleteFolder(folder)}
                           />
+                          <span>|</span>
+                          </>
                         ): (
-                          <div style={{ width: '20px', height: '20px' }}></div>
+                          <></>
                           )
-                        }
-                      <span>|</span>
-                        <Image 
-                          src='/icons/dropdown-arrow.svg'
-                          width={8}
-                          height={8}
-                          alt="Expand"
-                          className="add-icon-small mx-2"
-                          onClick={() => toggleFolder(index)}
-                       />                     
+                        }      
+                      </div>               
+                      <Image 
+                        src='/icons/dropdown-arrow.svg'
+                        width={8}
+                        height={8}
+                        alt="Expand"
+                        className="add-icon-small mx-2"
+                        onClick={() => toggleFolder(index)}
+                      />                     
                     </div>
                   </div>
 

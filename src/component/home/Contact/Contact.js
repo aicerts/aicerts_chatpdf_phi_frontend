@@ -124,7 +124,7 @@ const Contact = () => {
                 </Button>
               </Form>
             </Col>
-            <Col xs={12} md={6} lg={6} style={{ display: "flex", alignItems: 'center' }}>
+            <Col xs={12} md={6} lg={6} style={{ display: "flex", alignItems: 'end' }}>
                 <Image
                     width={553}
                     height={360}

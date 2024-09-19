@@ -3,30 +3,16 @@ import Showpdf from './showpdf';
 import ChatSection from './chatSection';
 import Image from 'next/image';
 
-const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading, childData, selectedFolder}) => {
-  const [pdfName, setPdfName] = useState("");
-  // const [selectedFolder, setSelectedFolder] = useState([]);
-
-  // const handleSelectFolder = (newFolder) => {
-  //   setSelectedFolder(newFolder);
-  // };
+const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading, childData, selectedFolder, pdfName}) => {
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-  useEffect(() => {
-    const pdfFileString = sessionStorage.getItem("pdfFile");
-    if (pdfFileString) {
-      setPdfName(pdfFileString)
-    }
-  }, []);
-
   return (
     <div className='main-section'>
       <div className='main-header'>
-            <Image alt='hideicon' width={24} height={24} onClick={toggleCollapse} className='hide-sidebar-icon' src='/icons/hide-sidebar.svg' />
-            {/* <p className='header-p'>{pdfName}</p> */}
+          <Image alt='hideicon' width={24} height={24} onClick={toggleCollapse} className='hide-sidebar-icon' src='/icons/hide-sidebar.svg' />
       </div>
       <div className='main-body'>
         <div className='column'>
@@ -34,7 +20,7 @@ const MainSection = ({isCollapsed,setIsCollapsed, isLoading, setIsLoading, child
         </div>
         <div className="vertical-line"></div>
         <div  className='column'>
-          <ChatSection isLoading={isLoading} setIsLoading={setIsLoading} selectedFolder={selectedFolder} childData={childData}/>
+          <ChatSection isLoading={isLoading} setIsLoading={setIsLoading} selectedFolder={selectedFolder} childData={childData} pdfName={pdfName} />
         </div>
       </div>
 
