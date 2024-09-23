@@ -16,7 +16,6 @@
     .form-container {
         background-color: $white;
         padding: 48px;
-        border-radius: 50px;
 
         .title {
             color: #000;
@@ -40,8 +39,12 @@
             }
 
             .form-control {
-                border-radius: 10px;
                 border: 1px solid #D5DDEA;
+                border-radius: 0;
+                -webkit-border-radius: 0;
+                -moz-border-radius: 0;
+                -ms-border-radius: 0;
+                -o-border-radius: 0;
             }
 
             .save-it {
@@ -84,6 +87,39 @@
                 font-weight: 700;
                 line-height: normal;
                 text-decoration-line: underline;
+            }
+        }
+
+        //1600 screens
+        @media (min-width: $large-min) and (max-width: $large-max) {
+            
+        }
+
+        //1440 screens
+        @media (min-width: $medium-min) and (max-width: $medium-max) {
+            .title {
+                font-size: 36px;
+                margin-bottom: 26px;
+            }
+        }
+
+        //1366 screens
+        @media (min-width: $small-min) and (max-width: $small-max) {
+            padding: 20px;
+
+            .title {
+                font-size: 26px;
+                margin-bottom: 20px;
+            }
+        }
+
+        //1280 screens
+        @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+            padding: 20px;
+
+            .title {
+                font-size: 26px;
+                margin-bottom: 20px;
             }
         }
     }
