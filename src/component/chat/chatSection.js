@@ -442,7 +442,7 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder, pdfNa
               <button className='delete-btn' onClick={deleteChat}>
                 <Image alt='delete' width={20} height={20} className='icon-delete' src="/icons/delete1.svg"/>
               </button>
-              <input disabled={loading} className='input-enter rounded-0' placeholder={`Ask to file ${getFileName}`} value={userMessage} onChange={handleChange} />
+              <input disabled={loading} className='input-enter rounded-0' placeholder={`Ask to file: ${pdfName}`} value={userMessage} onChange={handleChange} />
               <div onClick={(e) => { handleSubmit(e) }} className="send-icon-container">
                 <Image alt='sendicon' width={20} height={20} className='icon-send' src={loading ? '/icons/spinner.gif':'/icons/send-icon.svg'} />
               </div>
@@ -459,6 +459,7 @@ const ChatSection = ({ isLoading, setIsLoading, childData, selectedFolder, pdfNa
           </form>
           )}
       </div>
+
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <div style={{ display: "flex", justifyContent: "flex-end", margin: "10px", cursor: "pointer", color: "gray", }}>
           <Image

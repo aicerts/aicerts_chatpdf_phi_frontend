@@ -33,7 +33,7 @@ const PrevInfoComponent = () => {
             console.log(error);
         }
     };
-
+ /* eslint-disable */
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('User'));
         if (user) {
@@ -41,7 +41,7 @@ const PrevInfoComponent = () => {
             fetchData(user._id);
         }
     }, []);
-
+ /* eslint-disable */
     return (
         <div className='section-pad prev-info'>
             {isLoggedIn ? (

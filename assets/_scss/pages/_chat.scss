@@ -148,6 +148,30 @@
         }
       }
 
+      .user-profile {
+        .dropdown {
+          .dropdown-toggle {
+            color: #5B5A5F;
+            font-family: $Montserrat;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+            background: #F3F3F3;
+            text-transform: capitalize !important;
+            padding: 7px 10px;
+            column-gap: 8px;
+
+            &::after {
+              display: none;
+            }
+          }
+          .dropdown-menu {
+
+          }
+        }
+      }
+
       p {
         font-family: $font-family;
         font-size: 18px;
@@ -184,40 +208,56 @@
 
         //1280 screens
         @media (min-width: $laptop-min) and (max-width: $laptop-max) {
-          width: 448px;
+          width: 440px;
         }
 
         input[type="text"] {
-          // width: calc(100% - 20px);
-          height: 37px;
-          padding: 10px;
+          height: 50px;
         }
 
         .chat-header {
           width: calc(100% - 20px);
-          height: 37px;
-          padding: 10px 0;
-          border-radius: 10px;
+        }
+
+        .display-file-list {
+          width: 97%;
+
+          //1600 screens
+          @media (min-width: $large-min) and (max-width: $large-max) {
+            width: 96%;
+          }
+
+          //1440 screens
+          @media (min-width: $medium-min) and (max-width: $medium-max) {
+            // width: 472px;
+          }
+
+          //1366 screens
+          @media (min-width: $small-min) and (max-width: $small-max) {
+            width: 96%;
+          }
+
+          //1280 screens
+          @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+            width: 95%;
+          }
+        }
+
+        &:has(.display-file-list) {
+          .pdf-container { 
+            height: 76vh;
+          }
+        }
+
+        .pdf-container {
+          width: calc(100% - 20px);
+          margin-top: 10px;
+          height: 81vh;
+          border: 1px solid #EEEEEE;
+          background: #FFFFFF;
         }
       }
 
-      // .vertical-line {
-      //     height: 80vh;
-      //     border: 1px solid #EEEEEE;
-      //     width: 1px;
-      //     margin: 20px 20px;
-      //     //transform: translateX(-50%); // Adjust the position to center the vertical line
-      //   }
-
-      .pdf-container {
-        width: calc(100% - 20px);
-        margin-top: 10px;
-        height: 81vh;
-        border-radius: 10px;
-        border: 1px solid #EEEEEE;
-        background: #FFFFFF;
-
-      }
 
       .chat-header {
         display: flex;
@@ -253,11 +293,6 @@
             margin-left: 5px;
           }
 
-          .chat-icons {
-           
-            /* Add styles as needed */
-          }
-
           .icons {
             margin-right: 5px;
             /* Adjust margin between icons */
@@ -265,10 +300,11 @@
           }
 
           .tooltip-container {
-            position: relative;
-            display: inline-block;
             background-color: #f3f4f6;
-            padding: 15px;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
 
             .tooltip-text {
               visibility: hidden;
@@ -489,6 +525,31 @@
     align-items: flex-end;
     margin-bottom: 10px;
     width: 97%;
+    column-gap: 8px;
+
+    .input-group {
+      width: 74%;
+
+      //1600 screens
+      @media (min-width: $large-min) and (max-width: $large-max) {
+        width: 67%;
+      }
+
+      //1440 screens
+      @media (min-width: $medium-min) and (max-width: $medium-max) {
+        width: 63%;
+      }
+
+      //1366 screens
+      @media (min-width: $small-min) and (max-width: $small-max) {
+        width: 61%;
+      }
+
+      //1280 screens
+      @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+        width: 58%;
+      }
+    }
   }
 
   .search-input-pdf {
@@ -500,9 +561,8 @@
   }
 
   .icon {
-    width: 21px;
-    height: 21px;
-    margin-right: 5px;
+    width: 15px;
+    height: 15px;
     cursor: pointer;
 
     &:active {
@@ -511,18 +571,12 @@
 
   }
 
-  .display-file-list {
-    width: 97%;
-  }
-
-  .reload-icon {
-    // margin-left: auto;
-  }
-
   .search-btn {
     background-color: #f3f4f6;
-    padding: 7px;
-    margin-right: 5px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
   }
 
   .delete-btn {
@@ -540,6 +594,30 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .search-folder {
+      padding: 0 20px;
+
+      //1600 screens
+      @media (min-width: $large-min) and (max-width: $large-max) {
+        
+      }
+
+      //1440 screens
+      @media (min-width: $medium-min) and (max-width: $medium-max) {
+        padding: 0 18px;
+      }
+
+      //1366 screens
+      @media (min-width: $small-min) and (max-width: $small-max) {
+        padding: 0 14px;
+      }
+
+      //1280 screens
+      @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+        
+      }
+    }
 
     .search-input-option {
       /* Styles for the search input */

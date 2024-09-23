@@ -41,6 +41,7 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder, se
   const [selectedFolderIndex, setSelectedFolderIndex] = useState(null);
 
   // Effect to filter files and folders based on search input
+  /* eslint-disable */
   useEffect(() => {
     if (typeof inputValue === "string") {
       if (inputValue === "") {
@@ -68,11 +69,38 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder, se
       }
     }
   }, [inputValue, folders]);
+   /* eslint-disable */
 
   // Handler for search input change
   const handleSearchInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
+    const value = e.target.value;
+    setInputValue(value); // Always set the input value
+  
+    if (value === "") {
+      // If input is cleared, reset to the original folder list
+      fetchPDFList(); // Re-fetch the original folder list
+    } else {
+      // Otherwise, filter the folders based on the search input
+      const filtered = folders
+        .map((folder) => {
+          const filteredFiles = folder?.files?.filter(
+            (file) =>
+              typeof file?.name === "string" &&
+              file.name.toLowerCase().includes(value.toLowerCase())
+          );
+          if (filteredFiles.length > 0) {
+            return {
+              ...folder,
+              files: filteredFiles,
+            };
+          }
+          return null;
+        })
+        .filter((folder) => folder !== null);
+  
+      setFolders(filtered);
+    }
+  };  
 
   const handleClick = (index) => {
     if (activeFolderIndex === index) {
@@ -227,6 +255,7 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder, se
         sessionStorage.setItem('folderKbName', folderKbName);
         onSelectFolder(selectedFolder); // Call onSelectFolder function with the selected folder
         onSendData(true); // A folder is selected, so set onSendData to true
+        console.log("Folder Info: ", selectedFolder)
     }
   };
 
@@ -325,6 +354,7 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder, se
     if (draggingFile) return; // Don't process click if dragging
     onSendData(false);
     setSelectedFolderIndex(null);
+    console.log("File data: ", file)
     try {
       const url = await generatePresignedUrl(file.fileUrl);
       setSelectedPdf(url);
@@ -410,7 +440,7 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder, se
     <DndContext onDragEnd={handleDragEnd}>
       <div className="options">
         {/* Search input */}
-        <InputGroup className="mt-3 pe-4 ps-4">
+        <InputGroup className="mt-3 search-folder">
           <Form.Control
             onChange={handleSearchInputChange}
             type="text"
@@ -472,27 +502,25 @@ const OptionSection = ({ setIsLoading, isLoading, onSendData, onSelectFolder, se
                             onClick={(e) => {
                               handleOpen(e, folder.folder._id);
                             }}
-                            className="add-icon-small mx-2"
+                            className="add-icon-small"
                             src="/icons/fi-rr-add.svg"
                             alt="Add Icon"
                         />
-                        <span>|</span>
-                        {!selectedFolderIndex === index && folder.folder.name !== "Default" ? (
+                        {folder.folder.name !== "Default" ? (
                           <>
-                          <Image
-                            width={20}
-                            height={20}
-                            className='icons'
-                            src="/icons/delete1.svg"
-                            alt="Delete Folder"
-                            onClick={() => handleDeleteFolder(folder)}
-                          />
-                          <span>|</span>
+                            <span>|</span>
+                            <Image
+                              width={20}
+                              height={20}
+                              className='icons'
+                              src="/icons/delete1.svg"
+                              alt="Delete Folder"
+                              onClick={() => handleDeleteFolder(folder)}
+                            />
                           </>
                         ): (
                           <></>
-                          )
-                        }      
+                        )}      
                       </div>               
                       <Image 
                         src='/icons/dropdown-arrow.svg'

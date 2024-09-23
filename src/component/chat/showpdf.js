@@ -35,7 +35,7 @@ const Showpdf = ({selectedFolder, childData}) => {
   return (
     <div>
       <div className="search-container">
-        <InputGroup className="pe-2">
+        <InputGroup>
           <Form.Control
             onChange={handleSearch}
             type="text"
